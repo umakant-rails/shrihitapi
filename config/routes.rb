@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
- 
+
   get '/current_user', to: 'current_user#index'  
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
@@ -10,13 +10,12 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
-  # devise_for :users, controllers: {
-  #   sessions: 'users/sessions',
-  #   registrations: 'users/registrations'
-  # }
-  resources :blogs
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+  namespace :public, path: :pb do
+    resources :home, only: [:index]
+    resources :articles, only: [:index, :show] do
+      get "/autocomplete_term" => "articles#autocomplete_term", as: :autocomplete_term, on: :collection
+      get "/search" => "articles#search_page", as: :search_page, on: :collection
+      get "/search_articles" => "articles#search_articles", as: :search_articles, on: :collection
+    end
+  end
 end
