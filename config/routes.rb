@@ -17,5 +17,8 @@ Rails.application.routes.draw do
       get "/search" => "articles#search_page", as: :search_page, on: :collection
       get "/search_articles" => "articles#search_articles", as: :search_articles, on: :collection
     end
+    resources :authors do
+      get "/autocomplete_term" => "authors#autocomplete_term", as: :autocomplete_term, on: :collection
+    end
   end
 end
