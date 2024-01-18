@@ -19,6 +19,8 @@ Rails.application.routes.draw do
     end
     resources :authors do
       get "/autocomplete_term" => "authors#autocomplete_term", as: :autocomplete_term, on: :collection
+      get '/sants' => "authors#sants", as: :sants, on: :collection
+      get '/sant_biography' => "authors#sant_biography", as: :sant_biography, on: :member
     end
   end
 end
