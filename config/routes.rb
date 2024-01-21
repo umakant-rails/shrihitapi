@@ -23,5 +23,6 @@ Rails.application.routes.draw do
       get '/sant_biography' => "authors#sant_biography", as: :sant_biography, on: :member
     end
     resources :scriptures , only: [:index, :show]
+    resources :stories, only: [:index, :show]
   end
 end
