@@ -1,7 +1,8 @@
 class Public::ArticlesController < ApplicationController
 
   def index
-    @articles = Article.order("created_at DESC").first(10)
+    @articles = Article.order("created_at DESC")
+    # @articles = Article.all.paginate(page: 1, per_page: 10)
     @authors = Author.order("created_at DESC")
     @contexts = Context.order("created_at DESC")
     @tags = Tag.order("created_at DESC")
