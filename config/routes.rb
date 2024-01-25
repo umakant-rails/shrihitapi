@@ -11,7 +11,9 @@ Rails.application.routes.draw do
   }
 
   namespace :public, path: :pb do
-    resources :home, only: [:index]
+    resources :home, only: [:index] do
+      get "/get_footer_data" => "home#get_footer_data", as: :get_footer_data, on: :collection
+    end
     resources :articles, only: [:index, :show] do
       get "/autocomplete_term" => "articles#autocomplete_term", as: :autocomplete_term, on: :collection
       get "/search" => "articles#search_page", as: :search_page, on: :collection
@@ -27,5 +29,8 @@ Rails.application.routes.draw do
     resources :strota, only: [:index, :show] do 
       get '/type/:strota_type' => "strota#get_strota_by_type", as: :get_strota_by_type, on: :collection
     end
+    resources :article_types, only: [:index, :show]
+    resources :contexts, only: [:index, :show]
+    resources :tags, only: [:index, :show]
   end
 end

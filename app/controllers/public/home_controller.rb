@@ -21,4 +21,18 @@ class Public::HomeController < ApplicationController
       
   end
 
+  def get_footer_data
+    @authors = Author.order("created_at DESC").first(10)
+    @contexts = Context.order("created_at DESC").first(10)
+    @tags = Tag.order("created_at DESC").first(10)
+    @article_types = ArticleType.order("created_at DESC").first(10)
+
+    render json: {
+      authors: @authors,
+      contexts: @contexts,
+      tags: @tags,
+      article_types: @article_types
+    }
+  end
+
 end
