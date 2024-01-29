@@ -11,7 +11,7 @@ class Tag < ApplicationRecord
   scope :approved, ->() { where(is_approved: true) }
 
   def self.create_tags(current_user, param_tags)
-    param_tags.each_with_index{| tag, index | param_tags[index] = tag.strip }
+    params_tags = params_tags.collect{ |tag| tag.strip }
 
     tags = Tag.where(name: param_tags)
     new_tags = (param_tags-tags.pluck(:name))

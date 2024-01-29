@@ -10,6 +10,11 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
+  resources :articles do
+    get '/new' => "articles#new", on: :collection
+  end
+  resources :tags
+
   namespace :public, path: :pb do
     resources :home, only: [:index] do
       get "/get_footer_data" => "home#get_footer_data", as: :get_footer_data, on: :collection
