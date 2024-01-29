@@ -29,12 +29,14 @@ class TagsController < ApplicationController
     params[:tag][:name] = params[:tag][:name].strip
     @tag = current_user.tags.new(tag_params)
 
-    respond_to do |format|
-      if true #@tag.save
-        format.json { render :show, status: :created, location: @tag }
-      else
-        format.json { render json: @tag.errors, status: :unprocessable_entity }
-      end
+    if @tag.save
+      render json: {
+        status: 'Tag is created Successfully.'
+      }
+    else
+      render json: {
+        status: :unprocessable_entity
+      }
     end
   end
 
