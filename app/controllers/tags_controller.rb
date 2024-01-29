@@ -28,9 +28,11 @@ class TagsController < ApplicationController
   def create
     params[:tag][:name] = params[:tag][:name].strip
     @tag = current_user.tags.new(tag_params)
+    tags = Tag.order("name ASC")
 
     if @tag.save
       render json: {
+        tags: tags,
         status: 'Tag is created Successfully.'
       }
     else
