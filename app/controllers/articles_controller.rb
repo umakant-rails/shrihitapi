@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  # before_action :authenticate_user!
+  before_action :authenticate_user!
 
   def new
     tags = Tag.approved.order("name ASC")
@@ -27,12 +27,19 @@ class ArticlesController < ApplicationController
   # POST /articles or /articles.json
   def create
     @article = current_user.articles.new(article_params)
-    debugger
+
     if true #@article.save
-      redner json: { article: @article, status: "Article was successfully created."}
+      render json: { article: @article, notice: "Article was created successfully."}
     else
-      render json: { article: @article.errors, status: :unprocessable_entity }
+      render json: { article: @article.errors, error: :unprocessable_entity }
     end
   end
+
+  private
+
+     def article_params
+      params.fetch(:article, {}).permit(:content, :raag_id, :scripture_id, :index, :author_id, :article_type_id,
+        :theme_id, :context_id, :hindi_title, :english_title, image_attributes:[:image])
+    end
 
 end
