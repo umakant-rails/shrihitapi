@@ -114,6 +114,17 @@ class ArticlesController < ApplicationController
     end
   end
 
+  def articles_by_page
+    page = params[:page].present? ? params[:page] : 1
+    total_articles = Article.count
+    articles = Article.order("created_at DESC").page(page).per(10)
+
+    render json: { 
+      total_articles: total_articles,
+      articles: articles,
+    }
+  end
+
   private
 
     def article_params

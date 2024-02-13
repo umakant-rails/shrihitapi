@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   resources :articles do
     get '/new' => "articles#new", on: :collection
+    get '/pages/:page' => "articles#articles_by_page", on: :collection
   end
   resources :tags
 
