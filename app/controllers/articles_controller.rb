@@ -4,46 +4,38 @@ class ArticlesController < ApplicationController
 
   def index
     page = params[:page].present? ? params[:page] : 1
-
-    tags = Tag.approved.order("name ASC")
-    authors = Author.order("name ASC")
-    contexts = Context.order("name ASC")
-    raags = Raag.order("name ASC")
-    article_types = ArticleType.order("name ASC")
-    scriptures = Scripture.order("name ASC")
     total_articles = Article.count
-
     articles = Article.order("created_at DESC").page(page).per(10)
     
+    get_article_data
+
+    articles_tmp = articles.map do | article |
+      article.attributes.merge({author: article.author.name, article_type: article.article_type.name})
+    end
+
+    
     render json: {
-      tags: tags,
-      contexts: contexts,
-      raags: raags,
-      authors: authors,
-      article_types: article_types,
-      scriptures: scriptures,
+      contexts: @contexts,
+      raags: @raags,
+      authors: @authors,
+      article_types: @article_types,
+      scriptures: @scriptures,
       total_articles: total_articles,
-      articles: articles
+      articles: articles_tmp
     }
   end
 
   def new
-    tags = Tag.approved.order("name ASC")
-    authors = Author.order("name ASC")
-    contexts = Context.order("name ASC")
-    raags = Raag.order("name ASC")
-    article_types = ArticleType.order("name ASC")
-    scriptures = Scripture.order("name ASC")
-
+    get_article_data
     # article = Article.new({author_id: author.id, context_id: context.id})
     
     render json: {
-      tags: tags,
-      contexts: contexts,
-      raags: raags,
-      authors: authors,
-      article_types: article_types,
-      scriptures: scriptures,
+      tags: @tags,
+      contexts: @contexts,
+      raags: @raags,
+      authors: @authors,
+      article_types: @article_types,
+      scriptures: @scriptures,
       # article: article
     }
   end
@@ -116,12 +108,31 @@ class ArticlesController < ApplicationController
 
   def articles_by_page
     page = params[:page].present? ? params[:page] : 1
-    total_articles = Article.count
-    articles = Article.order("created_at DESC").page(page).per(10)
+    # total_articles = Article.count
+    # articles = Article.order("created_at DESC").page(page).per(10)
+    arr = []
+
+    arr.push('article_type_id='+params[:article_type_id]) if params[:article_type_id].present?
+    arr.push('author_id='+params[:author_id]) if params[:author_id].present?
+    arr.push('context_id='+params[:context_id]) if params[:context_id].present?
+    arr.push('scripture_id='+params[:scripture_id]) if params[:scripture_id].present?
+    arr.push('raag_id='+params[:raag_id]) if params[:raag_id].present?
+
+    if arr.length > 0
+      total_articles = Article.where(arr.join(' and ')).count
+      articles = Article.where(arr.join(' and ')).order("created_at DESC").page(page).per(10)
+    else
+      total_articles = Article.count
+      articles = Article.order("created_at DESC").page(page).per(10)
+    end
+
+    articles_tmp = articles.map do | article |
+      article.attributes.merge({author: article.author.name, article_type: article.article_type.name})
+    end
 
     render json: { 
       total_articles: total_articles,
-      articles: articles,
+      articles: articles_tmp,
     }
   end
 
