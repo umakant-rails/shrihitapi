@@ -14,6 +14,12 @@ Rails.application.routes.draw do
     get '/new' => "articles#new", on: :collection
     get '/pages/:page' => "articles#articles_by_page", on: :collection
   end
+
+  resources :authors do 
+    get '/new' => "authors#new", on: :collection
+    post '/sampradaya' => "authors#sampradaya", on: :collection
+  end
+
   resources :tags
 
   namespace :public, path: :pb do
