@@ -21,6 +21,9 @@ Rails.application.routes.draw do
   end
 
   resources :tags
+  resources :stories do
+    get '/new' => "stories#new", on: :collection
+  end
 
   namespace :public, path: :pb do
     resources :home, only: [:index] do
