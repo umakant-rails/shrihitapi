@@ -24,6 +24,10 @@ Rails.application.routes.draw do
   resources :stories do
     get '/new' => "stories#new", on: :collection
   end
+  
+  namespace :admin do
+    resources :contexts
+  end
 
   namespace :public, path: :pb do
     resources :home, only: [:index] do

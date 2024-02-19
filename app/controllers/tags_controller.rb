@@ -7,27 +7,22 @@ class TagsController < ApplicationController
     page = params[:page].present? ? params[:page] : 1
 
     if params[:start_with].present?
-      total_tags = current_user.tags.where("name like '#{params[:start_with]}%'").count
-      tags = current_user.tags.where("name like '#{params[:start_with]}%'").page(page).per(10)
+      @total_tags = current_user.tags.where("name like '#{params[:start_with]}%'").count
+      @tags = current_user.tags.where("name like '#{params[:start_with]}%'").page(page).per(10)
     else
-      total_tags = current_user.tags.count
-      tags = current_user.tags.order("created_at DESC").page(page).per(10)
+      @total_tags = current_user.tags.count
+      @tags = current_user.tags.order("created_at DESC").page(page).per(10)
     end
 
     render json: {
-      tags: tags,
-      total_tags: total_tags,
+      tags: @tags,
+      total_tags: @total_tags,
       current_page: page,
     }
   end
 
   # GET /tags/1 or /tags/1.json
   def show
-  end
-
-  # GET /tags/new
-  def new
-    @tag = Tag.new
   end
 
   # POST /tags or /tags.json
