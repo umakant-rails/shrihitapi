@@ -21,14 +21,6 @@ class Admin::ContextsController < ApplicationController
     }
   end
 
-  # GET /contexts/1 or /contexts/1.json
-  def show
-  end
-
-  # GET /contexts/1/edit
-  def edit
-  end
-
   # POST /contexts or /contexts.json
   def create
     page = params[:page].present? ? params[:page] : 1

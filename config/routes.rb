@@ -27,6 +27,10 @@ Rails.application.routes.draw do
   
   namespace :admin do
     resources :contexts
+    resources :article_types
+    resources :strota do 
+      get '/new' => "strota#new", on: :collection
+    end
   end
 
   namespace :public, path: :pb do
