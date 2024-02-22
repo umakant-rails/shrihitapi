@@ -7,7 +7,6 @@ class Admin::StrotaArticlesController < ApplicationController
   # GET /strota_articles or /strota_articles.json
   def index
     @strota = Strotum.all
-    
     @strota_articles = @strotum.strota_articles.order("created_at DESC").page(params[:page])
   end
 
@@ -45,29 +44,39 @@ class Admin::StrotaArticlesController < ApplicationController
   # POST /strota_articles or /strota_articles.json
   def create
     params[:strota_article][:article_type_id] = 6 if params[:strota_article][:article_type_id].blank?
-    @strota_article = StrotaArticle.new(strota_article_params)
+    @strota_article = @strotum.strota_articles.new(strota_article_params)
 
-    respond_to do |format|
-      if @strota_article.save
-        format.html { redirect_to new_admin_strotum_strota_article_url(article_id: @strota_article.id), notice: "Strota article was successfully created." }
-        format.json { render :show, status: :created, location: @strota_article }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @strota_article.errors, status: :unprocessable_entity }
-      end
+    if @strota_article.save
+      @strotum_articles = @strotum.strota_articles.order("index ASC")
+      render json: {
+        strota_article: @strota_article,
+        strotum_articles: @strotum_articles,
+        notice: 'Article is created successfully'
+      }
+    else
+      render json: { 
+        strotum: @strota_article.errors,
+        error: @strota_article.errors.full_messages
+      }
     end
   end
 
   # PATCH/PUT /strota_articles/1 or /strota_articles/1.json
   def update
-    respond_to do |format|
-      if @strota_article.update(strota_article_params)
-        format.html { redirect_to admin_strotum_strota_article_url(params[:strotum_id], @strota_article.id), notice: "Strota article was successfully updated." }
-        format.json { render :show, status: :ok, location: @strota_article }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @strota_article.errors, status: :unprocessable_entity }
-      end
+    params[:strota_article][:article_type_id] = 6 if params[:strota_article][:article_type_id].blank?
+
+    if @strota_article.update(strota_article_params)
+      @strotum_articles = @strotum.strota_articles.order("index ASC")
+      render json: {
+        strota_article: @strota_article,
+        strotum_articles: @strotum_articles,
+        notice: 'Article is updated successfully'
+      }
+    else
+      render json: { 
+        strotum: @strota_article.errors,
+        error: @strota_article.errors.full_messages
+      }
     end
   end
 
@@ -81,21 +90,17 @@ class Admin::StrotaArticlesController < ApplicationController
     end
   end
 
-  def edit_article_index
-    @strota = Strotum.all
-    @strota_articles = @strotum.strota_articles.order("index ASC").page(params[:page]) rescue []
-  end
-
-  def update_article_index
+  def update_index
     @article = StrotaArticle.find(params[:id])
     
-    respond_to do |format|
-      if @article.update(index: params[:index])
-        flash[:notice] = "रचना का अनुक्रम अद्यतित कर दिया गया है."
-        format.js { render status: 200}
-        format.json { head :no_content }
-      end
+    if @article.update(index: params[:new_index])
+      @strotum_articles = @strotum.strota_articles.order("index ASC")
+      render json: {
+        strotum_articles: @strotum_articles,
+        notice: "रचना का अनुक्रम अद्यतित कर दिया गया है."
+      }
     end
+
   end
 
   private
@@ -105,7 +110,7 @@ class Admin::StrotaArticlesController < ApplicationController
     end
 
     def set_strota_article
-      @strota_article = StrotaArticle.find(params[:id])
+      @strota_article = StrotaArticle.find(params[:strotum_id])
     end
 
     # Only allow a list of trusted parameters through.

@@ -30,6 +30,9 @@ Rails.application.routes.draw do
     resources :article_types
     resources :strota do 
       get '/new' => "strota#new", on: :collection
+      resources :strota_articles do 
+        post '/update_index' =>"strota_articles#update_index", on: :member
+      end
     end
   end
 
