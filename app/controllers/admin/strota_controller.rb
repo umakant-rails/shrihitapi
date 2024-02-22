@@ -7,6 +7,7 @@ class Admin::StrotaController < ApplicationController
   def index
     page = params[:page].present? ? params[:page] : 1
     strota_types = StrotaType.order("name ASC");
+    @article_types = ArticleType.order("name ASC")
 
     if params[:strota_type_id].present?
       strota_tmp = Strotum.where("strota_type_id=?", params[:strota_type_id]).page(page).per(10)
@@ -21,6 +22,7 @@ class Admin::StrotaController < ApplicationController
 
     render json: {
       strota: @strota,
+      article_types: @article_types,
       total_strota: @total_strota,
       strota_types: strota_types,
       current_page: page

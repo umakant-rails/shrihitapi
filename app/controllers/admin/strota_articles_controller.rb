@@ -84,10 +84,11 @@ class Admin::StrotaArticlesController < ApplicationController
   def destroy
     @strota_article.destroy
 
-    respond_to do |format|
-      format.html { redirect_to admin_strotum_strota_articles_url(params[:strotum_id]), notice: "Strota article was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    @strotum_articles = @strotum.strota_articles.order("index ASC")
+    render json: {
+      strotum_articles: @strotum_articles,
+      notice: 'Article is deleted successfully'
+    }
   end
 
   def update_index
@@ -110,7 +111,7 @@ class Admin::StrotaArticlesController < ApplicationController
     end
 
     def set_strota_article
-      @strota_article = StrotaArticle.find(params[:strotum_id])
+      @strota_article = StrotaArticle.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
