@@ -6,10 +6,23 @@ class Admin::StrotaController < ApplicationController
   # GET /strota or /strota.json
   def index
     page = params[:page].present? ? params[:page] : 1
-    get_strota_by_page(page)
+    strota_types = StrotaType.order("name ASC");
+
+    if params[:strota_type_id].present?
+      strota_tmp = Strotum.where("strota_type_id=?", params[:strota_type_id]).page(page).per(10)
+      @total_strota = Strotum.where("strota_type_id=?", params[:strota_type_id]).count
+
+      @strota = strota_tmp.map do |st|
+        st.attributes.merge({strota_type: st.strota_type.name})
+      end
+    else
+      get_strota_by_page(page)
+    end
+
     render json: {
       strota: @strota,
       total_strota: @total_strota,
+      strota_types: strota_types,
       current_page: page
     }
   end
@@ -24,7 +37,13 @@ class Admin::StrotaController < ApplicationController
         strota_types: @strota_types,
       }
     else
-      render json: { story: @story }
+      @strotum_articles = @strotum.strota_articles.order("index ASC")
+      @article_types = ArticleType.order("name ASC")
+      render json: { 
+        strotum: @strotum,
+        strotum_articles: @strotum_articles,
+        article_types: @article_types
+      }
     end
   end
 
