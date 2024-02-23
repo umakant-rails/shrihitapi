@@ -34,6 +34,9 @@ Rails.application.routes.draw do
         post '/update_index' =>"strota_articles#update_index", on: :member
       end
     end
+    resources :scriptures do 
+      get '/new' => "scriptures#new", on: :collection
+    end
   end
 
   namespace :public, path: :pb do
