@@ -10,8 +10,8 @@ class Chapter < ApplicationRecord
 
   scope :chapter_scope, ->() { where(is_section: false) }
   scope :section_scope, ->() { where(is_section: true) }
-  scope :chapters, ->() { where(is_section: false) }
 
   validates :name, presence: true
+  paginates_per 10
 
 end

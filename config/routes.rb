@@ -36,6 +36,10 @@ Rails.application.routes.draw do
     end
     resources :scriptures do 
       get '/new' => "scriptures#new", on: :collection
+      resources :chapters
+      resources :scripture_articles do
+        get '/new' => "scripture_articles#new", on: :collection
+      end
     end
   end
 
