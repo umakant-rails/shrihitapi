@@ -36,7 +36,12 @@ class Admin::ScripturesController < ApplicationController
       }
     else
       render json: {
-        scripture: @scripture
+        scripture: @scripture,
+        sections: @scripture.sections,
+        chapters: @scripture.chapters,
+        articles: @scripture.scripture_articles.page(1).per(10),
+        total_articles: @scripture.scripture_articles.count,
+        current_page: 1
       }
     end
   end

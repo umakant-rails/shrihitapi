@@ -5,63 +5,75 @@
   before_action :set_scripture_article, only: %i[show edit update destroy ]
 
   def index
-    @scripture_articles = ScriptureArticle.order("created_at DESC").page(params[:page])
+    page = params[:page].present? ? params[:page] : 1
+    
+    if params[:chapter_id].present?
+      @chapter = Chapter.find(params[:chapter_id]);
+      @articles = @chapter.scripture_articles.order("index ASC").page(page).per(10)
+      @total_articles = @chapter.scripture_articles.count
+    else
+      @articles = @scripture.scripture_articles.page(page).per(10)
+      @total_articles = @scripture.scripture_articles.count
+    end
+
+    render json: {
+      articles: @articles,
+      total_articles: @total_articles,
+      current_page: page
+    }
   end
 
   def new
     @article_types = ArticleType.all
-    # @scriptures = Scripture.all
-    
-    # @scriptures = @scriptures_tmp.map do |scr|
-    #   scr.attributes.merge({sections: scr.sections, chapters: scr.chapters})
-    # end
-    @scripture.attributes.merge({sections: @scripture.sections, chapters: @scripture.chapters})
 
     render json: {
       scripture: @scripture,
-      article_types: @article_types
+      article_types: @article_types,
+      sections: @scripture.sections,
+      chapters: @scripture.chapters,
     }
   end
 
   def create
-    @scripture_article = ScriptureArticle.new(scripture_article_params)
+    @scripture_article = @scripture.scripture_articles.new(scripture_article_params)
 
-    respond_to do |format|
-      if @scripture_article.save
-        # format.html { redirect_to admin_scripture_article_url(@scr_article.id), notice: "Scripture Article was successfully created." }
-        #format.json { render :show, status: :created, location: @scr_article }
-        format.js {}
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @scr_article.errors, status: :unprocessable_entity }
-      end
+    if @scripture_article.save
+      render json: {
+        scripture_article: @scripture_article,
+        notice: "Scripture Article is created successfully"
+      }
+    else
+      render json: {
+        scripture_article: @scripture_article.errors, 
+        errors: @scripture_article.errors.full_messages 
+      }
     end
-  end
 
-  def edit
-    @article_types = ArticleType.all
-    @scriptures = Scripture.all
   end
 
   def update
-    respond_to do |format|
-      if @scripture_article.update(scripture_article_params)
-        format.html { redirect_to admin_scripture_articles_url } #admin_scripture_article_path(@scripture_article.id) }
-        format.json { render :show, status: :ok, location: @scripture_article }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @scripture_article.errors, status: :unprocessable_entity }
-      end
+    
+    if @scripture_article.update(scripture_article_params)
+      render json: {
+        scripture_article: @scripture_article,
+        notice: "Scripture Article is updated successfully."
+      }
+    else
+      render json: {
+        scripture_article: @scripture_article.errors, 
+        errors: @scripture_article.errors.full_messages 
+      }
     end
+
   end
 
   def destroy
     @scripture_article.destroy
 
-    respond_to do |format|
-      format.html { redirect_to admin_scripture_articles_url, notice: "Scripture Article was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    render json: {
+      scripture_article: @scripture_article,
+      notice: "Scripture Article is deleted successfully."
+    }
   end
 
   def edit_article_index
