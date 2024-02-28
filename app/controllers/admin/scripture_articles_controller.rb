@@ -23,6 +23,19 @@
     }
   end
 
+  def show
+    @scripture_article = ScriptureArticle.find(params[:id])
+    @article_types = ArticleType.all
+
+    render json: {
+      scripture: @scripture,
+      article_types: @article_types,
+      sections: @scripture.sections,
+      chapters: @scripture.chapters,
+      scripture_article: @scripture_article,
+    }
+  end
+
   def new
     @article_types = ArticleType.all
 
@@ -52,7 +65,6 @@
   end
 
   def update
-    
     if @scripture_article.update(scripture_article_params)
       render json: {
         scripture_article: @scripture_article,
