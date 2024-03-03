@@ -41,6 +41,12 @@ Rails.application.routes.draw do
         get '/new' => "scripture_articles#new", on: :collection
       end
     end
+    resources :compiled_scriptures, only: [:index, :show] do
+      get '/filter_articles' => "compiled_scriptures#filter_articles", as: :get_articles
+      get '/add_articles_page' => "compiled_scriptures#add_articles_page", as: :add_articles_page
+      post '/add_article' => "compiled_scriptures#add_article", as: :add_articles
+      post '/remove_article' => "compiled_scriptures#remove_article", as: :remove_articles
+    end
   end
 
   namespace :public, path: :pb do
