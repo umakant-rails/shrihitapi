@@ -30,6 +30,7 @@ class Admin::CompiledScripturesController < ApplicationController
       authors: @authors,
       article_types: @article_types,
       scripture: @scripture,
+      chapters: @scripture.chapters,
       total_articles: @total_articles,
       articles: @articles,
       added_articles: @added_articles,
