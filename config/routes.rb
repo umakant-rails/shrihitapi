@@ -42,10 +42,13 @@ Rails.application.routes.draw do
       end
     end
     resources :compiled_scriptures, only: [:index, :show] do
-      get '/filter_articles' => "compiled_scriptures#filter_articles", as: :get_articles
-      get '/add_articles_page' => "compiled_scriptures#add_articles_page", as: :add_articles_page
-      post '/add_article' => "compiled_scriptures#add_article", as: :add_articles
-      post '/remove_article' => "compiled_scriptures#remove_article", as: :remove_articles
+      get '/filter_articles' => "compiled_scriptures#filter_articles", as: :get_articles, on: :member
+      get '/add_articles_page' => "compiled_scriptures#add_articles_page", as: :add_articles_page, on: :member
+      post '/add_article' => "compiled_scriptures#add_article", as: :add_articles, on: :member
+      post '/remove_article' => "compiled_scriptures#remove_article", as: :remove_articles, on: :member
+      get '/get_articles_for_indexing' => "compiled_scriptures#get_articles_for_indexing", as: :edit_index_page, on: :member
+      put "/update_index" => "compiled_scriptures#update_index", as: :update_index, on: :member    
+      post '/delete_article' => "compiled_scriptures#delete_article", as: :delete_article, on: :member
     end
   end
 
