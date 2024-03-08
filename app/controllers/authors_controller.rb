@@ -22,7 +22,7 @@ class AuthorsController < ApplicationController
     render json: {
       total_authors: total_authors,
       authors: authors_tmp,
-      page: page
+      current_page: page
     }
   end
 
@@ -68,6 +68,7 @@ class AuthorsController < ApplicationController
       authors = current_user.authors.page(page).per(10)  
 
       render json: { 
+        author: @author,
         total_authors: total_authors,
         authors: authors,
         current_page: page,

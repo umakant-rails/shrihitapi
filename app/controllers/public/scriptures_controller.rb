@@ -22,28 +22,28 @@ class Public::ScripturesController < ApplicationController
     if @scripture.present? && @scripture.scripture_type.name == "रसिक वाणी"
       @articles = @scripture.articles.order("index")
 
-      scriptures_tmp = @scripture.attributes.merge({
+      @scripture = @scripture.attributes.merge({
         scripture_type: @scripture.scripture_type.name,
-        author: @scripture.author.name,
-        articles: @articles.map do | article |
-          article.attributes.merge({
-            author: article.author.name,
-            article_type: article.article_type.name
-          })
-        end
+        author: @scripture.author.name
       })
+      @articles = @articles.map do | article |
+        article.attributes.merge({
+          author: article.author.name,
+          article_type: article.article_type.name
+        })
+      end
     elsif @scripture.present? && @scripture.scripture_type.name == "कथायें"
       @articles = @scripture.stories.order("index")
       
-      scriptures_tmp = @scripture.attributes.merge({
+      @scripture = @scripture.attributes.merge({
         scripture_type: @scripture.scripture_type ? @scripture.scripture_type.name : 'NA',
         author: @scripture.author ? @scripture.author.name : 'NA',
-        articles: @articles
       })
     end
 
     render json: {
-      scripture: scriptures_tmp
+      scripture: @scripture,
+      articles: @articles
     }
   end
 

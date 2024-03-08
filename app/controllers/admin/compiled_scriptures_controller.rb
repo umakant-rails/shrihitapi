@@ -12,7 +12,7 @@ class Admin::CompiledScripturesController < ApplicationController
   def show
     page = params[:page].present? ? params[:page] : 1
     @chapters = @scripture.chapters.order("index ASC")
-    
+    @chapter = @chapters[0]
     # if @chapters.present?
     #   @articles = @chapters[0].cs_articles.order("index ASC").page(page).per(10)
     #   @total_articles = @chapters[0].cs_articles.count
@@ -164,12 +164,20 @@ class Admin::CompiledScripturesController < ApplicationController
   end
 
   def delete_article
+
+    page = params[:page].present? ? params[:page] : 1
     @cs_article = CsArticle.find(params[:article_id])
     @parent = @cs_article.chapter.present? ? @cs_article.chapter : @cs_article.scripture
     
     @cs_article.destroy
 
-    @articles = @parent.cs_articles.order("index ASC").page(1).per(10)
+    @articles = @parent.cs_articles.order("index ASC").page(page).per(10)
+
+    if @articles.blank?
+      page = page - 1
+      @articles = @parent.cs_articles.order("index ASC").page(page).per(10)
+    end
+
     @total_articles = @parent.cs_articles.count
     @articles = @articles.map do |a| 
       a.attributes.merge({
@@ -182,7 +190,7 @@ class Admin::CompiledScripturesController < ApplicationController
     render json: {
       articles: @articles,
       total_articles: @total_articles,
-      current_page: 1
+      current_page: page
     }
   end
 
