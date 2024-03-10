@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   end
   
   namespace :admin do
+    resources :dashboards, only: [:index]
     resources :contexts
     resources :article_types
     resources :strota do 
