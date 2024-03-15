@@ -2,27 +2,53 @@ class Admin::AuthorsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @authors = current_user.authors.page(params[:page])
     page = params[:page].present? ? params[:page] : 1
-    total_articles = Article.count
-    articles = Article.order("created_at DESC").page(page).per(10)
-    
-    get_article_data
-
-    articles_tmp = articles.map do | article |
-      article.attributes.merge({author: article.author.name, article_type: article.article_type.name})
-    end
-
-    
+    get_authors_with_params(page)
     render json: {
-      contexts: @contexts,
-      raags: @raags,
+      total_authors: @total_authors,
       authors: @authors,
-      article_types: @article_types,
-      scriptures: @scriptures,
-      total_articles: total_articles,
-      articles: articles_tmp
+      current_page: page
     }
   end
+  
+  def author_approved
+    page = params[:page].present? ? params[:page] : 1
+    @author = Author.find(params[:id])
 
+    if @author.update(is_approved: true)
+      get_authors_with_params(page)
+      render json: { 
+        total_authors: @total_authors,
+        authors: @authors,
+        current_page: page
+      }
+    else
+      render json: { error: @author.errors.full_messages }
+    end
+  end
+
+  private 
+    def get_authors_with_params(page)      
+      arr = []
+
+      arr.push('is_approved=true') if params[:status].present? && params[:status] == "approved"
+      arr.push('is_approved is null') if params[:status].present? && params[:status] == "pending"
+      arr.push("name like '#{params[:start_with]}%'") if params[:start_with].present?
+
+
+      if arr.present?
+        queryy = arr.join(' and ')
+        @total_authors = Author.where(queryy).count
+        @authors = Author.where(queryy).page(page).per(10)
+      else
+        @total_authors = Author.count
+        @authors = Author.order("name ASC").page(page).per(10)   
+      end
+
+      @authors = @authors.map do | author |
+        author.attributes.merge({
+          articles: author.articles
+        })
+      end
+    end
 end

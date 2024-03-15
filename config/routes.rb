@@ -26,6 +26,14 @@ Rails.application.routes.draw do
   end
   
   namespace :admin do
+    resources :articles do
+      get 'articles_by_page' => "articles#articles_by_page", on: :collection
+      post 'article_approved' => "articles#article_approved", on: :member
+    end
+    resources :authors do
+      post 'author_approved' => "authors#author_approved", on: :member
+    end
+
     resources :dashboards, only: [:index]
     resources :contexts
     resources :article_types

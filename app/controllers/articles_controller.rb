@@ -4,8 +4,8 @@ class ArticlesController < ApplicationController
 
   def index
     page = params[:page].present? ? params[:page] : 1
-    total_articles = Article.count
-    articles = Article.order("created_at DESC").page(page).per(10)
+    total_articles = current_user.articles.count
+    articles = current_user.articles.order("created_at DESC").page(page).per(10)
     
     get_article_data
 
@@ -19,7 +19,6 @@ class ArticlesController < ApplicationController
       raags: @raags,
       authors: @authors,
       article_types: @article_types,
-      scriptures: @scriptures,
       total_articles: total_articles,
       articles: articles_tmp
     }
@@ -92,8 +91,8 @@ class ArticlesController < ApplicationController
   def destroy
     if @article.destroy
       page = params[:page].present? ? params[:page] : 1
-      total_articles = Article.count
-      articles = Article.order("created_at DESC").page(page).per(10)
+      total_articles = current_user.articles.count
+      articles = current_user.articles.order("created_at DESC").page(page).per(10)
       
       render json: { 
         total_articles: total_articles,
@@ -117,13 +116,15 @@ class ArticlesController < ApplicationController
     arr.push('context_id='+params[:context_id]) if params[:context_id].present?
     arr.push('scripture_id='+params[:scripture_id]) if params[:scripture_id].present?
     arr.push('raag_id='+params[:raag_id]) if params[:raag_id].present?
+    arr.push("(hindi_title like '%#{params[:term]}%' or content like '%#{params[:term]}%')") if params[:term].present?
 
+    queryy = arr.join(' and ')
     if arr.length > 0
-      total_articles = Article.where(arr.join(' and ')).count
-      articles = Article.where(arr.join(' and ')).order("created_at DESC").page(page).per(10)
+      total_articles = current_user.articles.where(queryy).count
+      articles = current_user.articles.where(queryy).order("created_at DESC").page(page).per(10)
     else
-      total_articles = Article.count
-      articles = Article.order("created_at DESC").page(page).per(10)
+      total_articles = current_user.articles.count
+      articles = current_user.articles.order("created_at DESC").page(page).per(10)
     end
 
     articles_tmp = articles.map do | article |
@@ -153,7 +154,7 @@ class ArticlesController < ApplicationController
       @contexts = Context.order("name ASC")
       @raags = Raag.order("name ASC")
       @article_types = ArticleType.order("name ASC")
-      @scriptures = Scripture.order("name ASC")      
+      @scriptures = Scripture.where("scripture_type_id in (?)", [2]).order("name ASC")
     end
 
     def create_tags_for_articles
