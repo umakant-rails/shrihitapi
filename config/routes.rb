@@ -33,6 +33,9 @@ Rails.application.routes.draw do
     resources :authors do
       post 'author_approved' => "authors#author_approved", on: :member
     end
+    resources :tags do
+      post 'tag_approved' => "tags#tag_approved", on: :member
+    end
 
     resources :dashboards, only: [:index]
     resources :contexts

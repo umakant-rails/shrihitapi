@@ -41,6 +41,7 @@ class ArticlesController < ApplicationController
 
   # POST /articles or /articles.json
   def create
+    params[:article][:is_approved] = (current_user.role_id == 1) ? true : false
     @article = current_user.articles.new(article_params)
 
     if @article.save
@@ -140,8 +141,9 @@ class ArticlesController < ApplicationController
   private
 
     def article_params
-      params.fetch(:article, {}).permit(:content, :raag_id, :scripture_id, :index, :author_id, :article_type_id,
-        :theme_id, :context_id, :hindi_title, :english_title, image_attributes:[:image])
+      params.fetch(:article, {}).permit(:content, :raag_id, :scripture_id, :index, 
+        :author_id, :article_type_id, :theme_id, :context_id, :hindi_title, 
+        :english_title, :is_approved, image_attributes:[:image])
     end
 
     def set_article

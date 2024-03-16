@@ -33,6 +33,7 @@ class AuthorsController < ApplicationController
   end
 
   def create
+    params[:author][:is_approved] = (current_user.role_id == 1) ? true : false
     @author = current_user.authors.new(author_params)
 
     if @author.save

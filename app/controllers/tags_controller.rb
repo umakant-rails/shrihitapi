@@ -27,6 +27,7 @@ class TagsController < ApplicationController
 
   # POST /tags or /tags.json
   def create
+    params[:tag][:is_approved] = (current_user.role_id == 1) ? true : false
     params[:tag][:name] = params[:tag][:name].strip
     @tag = current_user.tags.new(tag_params)
 
@@ -89,7 +90,7 @@ class TagsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def tag_params
-      params.fetch(:tag, {}).permit(:name)
+      params.fetch(:tag, {}).permit(:name, :is_approved)
     end
 
     def get_tags_by_page(page)

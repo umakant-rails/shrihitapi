@@ -27,12 +27,28 @@ class Admin::AuthorsController < ApplicationController
     end
   end
 
+  def destroy
+    page = params[:page].present? ? params[:page] : 1
+    @author = Author.find(params[:id])
+
+    if @author.destroy
+      get_authors_with_params(page)
+      render json: { 
+        total_authors: @total_authors,
+        authors: @authors,
+        current_page: page,
+      }
+    else
+      render json: { error: @author.errors.full_messages }
+    end
+  end
+
   private 
     def get_authors_with_params(page)      
       arr = []
 
       arr.push('is_approved=true') if params[:status].present? && params[:status] == "approved"
-      arr.push('is_approved is null') if params[:status].present? && params[:status] == "pending"
+      arr.push('(is_approved is null or is_approved=false)') if params[:status].present? && params[:status] == "pending"
       arr.push("name like '#{params[:start_with]}%'") if params[:start_with].present?
 
 
