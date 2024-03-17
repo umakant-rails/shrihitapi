@@ -1,19 +1,22 @@
 class Public::ArticlesController < ApplicationController
 
   def index
-    @articles = Article.order("created_at DESC")
-    # @articles = Article.all.paginate(page: 1, per_page: 10)
+    page = params[:page].present? ? params[:page] : 1
+
+    @total_articles = Article.count
+    @articles = Article.order("created_at DESC").page(page).per(10)
     @authors = Author.order("created_at DESC")
     @contexts = Context.order("created_at DESC")
     @tags = Tag.order("created_at DESC")
     @article_types = ArticleType.order("created_at DESC") 
     
-    articles_tmp = @articles.map do | article |
+    @articles = @articles.map do | article |
       article.attributes.merge({author: article.author.name, article_type: article.article_type.name})
     end
 
     render json: {
-      articles: articles_tmp,
+      articles: @articles,
+      total_articles: @total_articles,
       authors: @authors,
       contexts: @contexts,
       tags: @tags,
@@ -51,6 +54,22 @@ class Public::ArticlesController < ApplicationController
 
     render json: {
       articles: articles_tmp
+    }
+  end
+
+  def get_aritcles_by_page
+    page = params[:page].present? ? params[:page] : 1
+
+    @total_articles = Article.count
+    @articles = Article.order("created_at DESC").page(page).per(10)
+
+    @articles = @articles.map do | article |
+      article.attributes.merge({author: article.author.name, article_type: article.article_type.name})
+    end
+
+    render json: {
+      articles: @articles,
+      total_articles: @total_articles,
     }
   end
 
