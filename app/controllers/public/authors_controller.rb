@@ -10,7 +10,7 @@ class Public::AuthorsController < ApplicationController
       @authors = Author.includes(:articles).where(arr[0]).page(page).per(10)
     else
       @total_authors = Author.count
-      @authors = Author.includes(:articles).page(page).per(10)
+      @authors = Author.includes(:articles).order("name ASC").page(page).per(10)
     end
 
     @authors = @authors.map do | author |

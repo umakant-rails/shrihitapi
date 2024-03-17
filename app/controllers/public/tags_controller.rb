@@ -9,9 +9,9 @@ class Public::TagsController < ApplicationController
 
   def show
     @tag = Tag.where(name: params[:id]).first rescue nil
-    articles = @tag.articles
+    articles = @tag.articles rescue nil
 
-    articles = articles.map do | article |
+    articles = articles && articles.map do | article |
       article.attributes.merge({
         author: article.author.name,
         article_type: article.article_type.name

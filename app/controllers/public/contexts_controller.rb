@@ -15,14 +15,12 @@ class Public::ContextsController < ApplicationController
     articles = context.articles.page(page).per(10) rescue nil
     total_articles = context.articles.count rescue nil
 
-
-    articles = articles.map do | article |
+    articles = articles && articles.map do | article |
       article.attributes.merge({
         author: article.author.name,
         article_type: article.article_type.name
       })
     end
-
 
     render json: {
       context: context,
