@@ -10,7 +10,7 @@ class ApplicationController < ActionController::API
   private 
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :email])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :email, :role_id])
   end
 
   def set_csrf_cookie

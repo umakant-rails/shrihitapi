@@ -5,4 +5,8 @@ class CurrentUserController < ApplicationController
     render json: current_user, status: :ok
   end
 
+  def get_user_role
+    render json: {role: current_user.role_id}
+  end
+
 end

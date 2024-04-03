@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
-  get '/current_user', to: 'current_user#index'  
+  get '/current_user', to: 'current_user#index' 
+  post '/users/get_role', to: 'current_user#get_user_role'
+
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
