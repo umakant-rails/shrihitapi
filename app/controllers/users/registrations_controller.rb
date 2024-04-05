@@ -11,9 +11,27 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # POST /resource
-  # def create
-  #   super
-  # end
+  def create
+    error = []
+    @user = User.where("email = ? or username = ?", params[:user][:email], params[:user][:username]).first rescue nil
+
+    if @user && (@user.email == params[:user][:email])
+      error.push("Email is already Exist.")
+    end
+    if @user && (@user.username == params[:user][:username])
+      error.push("Username is already taken.")
+    end 
+
+    if @user && error
+      render json: {
+        user: @user,
+        error: error,
+        status: 422
+      }
+    else
+      super
+    end
+  end
 
   # GET /resource/edit
   # def edit

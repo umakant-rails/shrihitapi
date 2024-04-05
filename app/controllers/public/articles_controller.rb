@@ -46,14 +46,21 @@ class Public::ArticlesController < ApplicationController
   end
 
   def search_articles
+    page = params[:page]
     search_term = params[:term]
-    @articles = Article.where("content like ? or LOWER(hindi_title) like ?", "%#{search_term.strip}%", "%#{search_term.strip}%")
-    articles_tmp = @articles.map do | article |
+
+    @articles = Article.where("content like ? or LOWER(hindi_title) like ?", 
+      "%#{search_term.strip}%", "%#{search_term.strip}%")
+    articles = page.present? ? @articles.page(page).per(10) : @articles
+    total_articles = @articles.count
+
+    articles_tmp = articles.map do | article |
       article.attributes.merge({author: article.author.name, article_type: article.article_type.name})
     end
 
     render json: {
-      articles: articles_tmp
+      articles: articles_tmp,
+      total_articles: total_articles
     }
   end
 
