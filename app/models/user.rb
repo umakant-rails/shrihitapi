@@ -45,4 +45,15 @@ class User < ApplicationRecord
   def is_contributer
     self.role.name == "Contributor"
   end
+
+  def compare_current_passowrd(password)
+    return User.find_for_authentication(email:self.email).valid_password?(password)
+  end
+
+  def change_password!(password)
+    self.reset_password_token = nil
+    self.password = password
+    save!
+  end
+
 end
