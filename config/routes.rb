@@ -71,6 +71,16 @@ Rails.application.routes.draw do
       put "/update_index" => "compiled_scriptures#update_index", as: :update_index, on: :member    
       post '/delete_article' => "compiled_scriptures#delete_article", as: :delete_article, on: :member
     end
+    resources :panchangs do 
+      post '/populate_panchang' => "panchangs#populate_panchang", on: :member, as: :populate_panchang
+      post '/add_purshottam_mas' => "panchangs#add_purshottam_mas", on: :member, as: :add_purshottam_mas
+      post '/remove_purshottam_mas' => "panchangs#remove_purshottam_mas", on: :member, as: :remove_purshottam_mas
+
+      resources :panchang_tithis do
+        get '/:month_id/get_tithis' => "panchang_tithis#get_tithis", as: :get_tithis, on: :collection
+      end
+    end
+
   end
 
   namespace :public, path: :pb do

@@ -248,20 +248,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_072353) do
   end
 
   create_table "strota", force: :cascade do |t|
-    t.string "title"
+    t.string "name"
     t.text "source"
     t.integer "strota_type_id"
-    t.string "keyword"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "strota_articles", force: :cascade do |t|
     t.integer "strotum_id"
+    t.integer "article_type_id"
     t.integer "index"
     t.text "content"
     t.text "interpretation"
-    t.integer "article_type_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
