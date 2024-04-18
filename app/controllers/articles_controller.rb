@@ -53,12 +53,6 @@ class ArticlesController < ApplicationController
   end
 
   def show
-    article_tmp = @article.attributes.merge({
-      author: @article.author.name, 
-      article_type: @article.article_type.name,
-      comments: @article.comments.order("created_at DESC"),
-      tags: @article.tags
-    })
 
     if params[:action_type] == "edit"
       get_article_data
@@ -72,6 +66,15 @@ class ArticlesController < ApplicationController
         article: article_tmp
       }
     else
+      comments_tmp = @article.get_comments
+
+      article_tmp = @article.attributes.merge({
+        author: @article.author.name, 
+        article_type: @article.article_type.name,
+        comments: comments_tmp,
+        tags: @article.tags
+      })
+
       render json: {
         article: article_tmp
       }

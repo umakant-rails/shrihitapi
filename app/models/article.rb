@@ -51,4 +51,19 @@ class Article < ApplicationRecord
     #return Article.where(query)
     return query
   end
+
+  def get_comments
+    comments = self.comments.joins(:user).order("created_at DESC").first(10)
+    comments_tmp = comments.map do | comment |
+      more_comments = comment.comments.order("created_at ASC")
+      if(more_comments)
+        more_comments = more_comments.map{|cmt| cmt.attributes.merge({user: cmt.user.username})}
+        comment.attributes.merge({user: comment.user.username, comments: more_comments})
+      else
+        comment.attributes.merge({user: comment.user.username})
+      end
+    end
+    return comments_tmp
+  end
+
 end

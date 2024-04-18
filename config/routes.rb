@@ -19,6 +19,9 @@ Rails.application.routes.draw do
   resources :articles do
     get '/new' => "articles#new", on: :collection
     get '/pages/:page' => "articles#articles_by_page", on: :collection
+    resources :comments do
+      post '/reply' => "comments#reply", on: :collection
+    end
   end
 
   resources :authors do 

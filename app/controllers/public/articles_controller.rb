@@ -29,10 +29,12 @@ class Public::ArticlesController < ApplicationController
     @article = Article.where(hindi_title: params[:id])[0] rescue nil
 
     if @article.present?
+      comments = @article.get_comments
+
       article_tmp = @article.attributes.merge({
         author: @article.author.name, 
         article_type: @article.article_type.name,
-        comments: @article.comments.order("created_at DESC")
+        comments: comments
       })
       render json: {
         article: article_tmp
@@ -40,7 +42,7 @@ class Public::ArticlesController < ApplicationController
     else
       render json: {
         status: 401,
-        error: "आपके द्वारा जिस रचना की जानकारी चाही गई थी, वह उपलब्ध नहीं है | \n हमारे पास उपलब्ध रचनाओं की सूची निम्नानुसार है",
+        error: ["आपके द्वारा जिस रचना की जानकारी चाही गई थी, वह उपलब्ध नहीं है | \n हमारे पास उपलब्ध रचनाओं की सूची निम्नानुसार है"],
       }
     end
   end
