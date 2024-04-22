@@ -77,6 +77,8 @@ Rails.application.routes.draw do
       post '/remove_purshottam_mas' => "panchangs#remove_purshottam_mas", on: :member, as: :remove_purshottam_mas
 
       resources :panchang_tithis do
+        get '/new' => "panchang_tithis#new", on: :collection
+        get '/navigate' => 'panchang_tithis#navigate_month', on: :collection
         get '/:month_id/get_tithis' => "panchang_tithis#get_tithis", as: :get_tithis, on: :collection
       end
     end
