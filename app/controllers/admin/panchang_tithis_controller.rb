@@ -2,6 +2,7 @@ class Admin::PanchangTithisController < ApplicationController
 	before_action :authenticate_user!
 	before_action :verify_admin
 	before_action :set_panchang
+	before_action :set_panchang_tithi , only: %i[ update destroy ]
 
 	def new 
 		date = @tithi.present? ? @tithi.date : Date.today
@@ -45,6 +46,45 @@ class Admin::PanchangTithisController < ApplicationController
 	  end
 	end
 
+	def get_editing_data
+		date = Date.parse(params[:date])
+		get_tithis(date)
+		months = @panchang.hindi_months
+		render json: {
+			panchang: @panchang,
+			tithis: @tithis,
+			months: months
+		}
+	end
+
+	def update
+		if @panchang_tithi.update(panchang_tithi_params)
+			get_tithis(@panchang_tithi.date)
+			months = @panchang.hindi_months
+			render json: {
+				panchang: @panchang,
+				tithis: @tithis,
+				months: months,
+				notice: 'Tithi is updated successfully.'
+			}
+		else
+			render json: {tithi: @tithi.errors.full_messages, notice: @tithi.errors.full_messages}
+		end
+	end
+
+	def destroy
+		date = @panchang_tithi.date
+		@panchang_tithi.destroy
+		get_tithis(date)
+		months = @panchang.hindi_months
+		render json: {
+			panchang: @panchang,
+			tithis: @tithis,
+			months: months,
+			notice: 'Tithi is deleted successfully.'
+		}
+	end
+
 	def navigate_month
 		get_current_month
 		get_tithis(Date.parse(params[:date]))
@@ -75,7 +115,7 @@ class Admin::PanchangTithisController < ApplicationController
 
 	def get_tithis(date)
 		start_of_month, end_of_month = date.beginning_of_month, date.end_of_month
-		@tithis=PanchangTithi.where("date between ? and ?", start_of_month, end_of_month) rescue []
+		@tithis=PanchangTithi.where("date between ? and ?", start_of_month, end_of_month).order("date ASC") rescue []
 	end
 
 	def set_panchang
