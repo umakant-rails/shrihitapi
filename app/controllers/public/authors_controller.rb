@@ -2,15 +2,15 @@ class Public::AuthorsController < ApplicationController
 
   def index
     page = params[:page].present? ? params[:page] : 1
-    arr = []
+    arr = ["is_approved=TRUE"]
     arr.push("name like '#{params[:start_with]}%'") if params[:start_with].present?
 
     if arr.present?
-      @total_authors = Author.where(arr[0]).count
-      @authors = Author.includes(:articles).where(arr[0]).page(page).per(10)
+      @total_authors = Author.where(arr.join(' and ')).count
+      @authors = Author.includes(:articles).where(arr.join(' and ')).page(page).per(10)
     else
-      @total_authors = Author.count
-      @authors = Author.includes(:articles).order("name ASC").page(page).per(10)
+      @total_authors = Author.where(arr.join(' and ')).count
+      @authors = Author.includes(:articles).where(arr.join(' and ')).order("name ASC").page(page).per(10)
     end
 
     @authors = @authors.map do | author |
@@ -51,7 +51,7 @@ class Public::AuthorsController < ApplicationController
   end
 
   def sants
-    @sants = Author.where("biography!= ''") rescue []
+    @sants = Author.where("is_approved=TRUE and biography!= ''") rescue []
 
     render json: {
       sants: @sants
@@ -59,7 +59,7 @@ class Public::AuthorsController < ApplicationController
   end
 
   def sant_biography
-    @sants = Author.where("biography!= ''") rescue []
+    @sants = Author.where("is_approved=TRUE and biography!= ''") rescue []
     @sant = Author.where(name_eng: params[:id].strip).first rescue nil
 
     render json: {

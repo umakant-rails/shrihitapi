@@ -4,11 +4,11 @@ class Public::ArticlesController < ApplicationController
     page = params[:page].present? ? params[:page] : 1
 
     @total_articles = Article.count
-    @articles = Article.order("created_at DESC").page(page).per(10)
+    @articles = Article.where("is_approved=?", true).order("created_at DESC").page(page).per(10)
     @authors = Author.order("created_at DESC")
     @contexts = Context.order("created_at DESC")
     @tags = Tag.order("created_at DESC")
-    @article_types = ArticleType.order("created_at DESC") 
+    @article_types = ArticleType.order("created_at DESC")
     
     @articles = @articles.map do | article |
       article.attributes.merge({author: article.author.name, article_type: article.article_type.name})
@@ -51,7 +51,7 @@ class Public::ArticlesController < ApplicationController
     page = params[:page]
     search_term = params[:term]
 
-    @articles = Article.where("content like ? or LOWER(hindi_title) like ?", 
+    @articles = Article.where("is_approved=TRUE and (content like ? or LOWER(hindi_title) like ?)", 
       "%#{search_term.strip}%", "%#{search_term.strip}%")
     articles = page.present? ? @articles.page(page).per(10) : @articles
     total_articles = @articles.count
@@ -70,7 +70,7 @@ class Public::ArticlesController < ApplicationController
     page = params[:page].present? ? params[:page] : 1
 
     @total_articles = Article.count
-    @articles = Article.order("created_at DESC").page(page).per(10)
+    @articles = Article.where("is_approved=TRUE").order("created_at DESC").page(page).per(10)
 
     @articles = @articles.map do | article |
       article.attributes.merge({author: article.author.name, article_type: article.article_type.name})

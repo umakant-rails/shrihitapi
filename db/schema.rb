@@ -163,7 +163,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_072353) do
     t.integer "year"
     t.integer "panchang_id"
     t.integer "hindi_month_id"
-    t.integer "index"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

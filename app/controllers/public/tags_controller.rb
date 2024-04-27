@@ -1,7 +1,7 @@
 class Public::TagsController < ApplicationController
 
   def index 
-    @tags = Tag.order("name ASC")
+    @tags = Tag.where("is_approved=TRUE").order("name ASC")
     render json:{
       tags: @tags
     }
