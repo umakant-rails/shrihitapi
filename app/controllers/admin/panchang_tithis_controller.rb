@@ -14,7 +14,7 @@ class Admin::PanchangTithisController < ApplicationController
     @tithi = @panchang.panchang_tithis.new(panchang_tithi_params)
     is_exist = @panchang.panchang_tithis.where(panchang_tithi_params).present?
     tithis_by_dt = PanchangTithi.where(date:  params[:panchang_tithi][:date])
-    last_tithi = PanchangTithi.order("date ASC").last
+    last_tithi = PanchangTithi.order("date, created_at ASC").last
 
     if is_exist
     	render json: { error: ["This tithi is already saved with same date."]}
@@ -84,11 +84,12 @@ class Admin::PanchangTithisController < ApplicationController
 		date = Date.parse(params[:date])
 		current_month = @panchang.get_current_month
 		get_tithis(date)
-		# tithi = @panchang.panchang_tithis.order("date ASC").last
+		tithi = @panchang.panchang_tithis.order("date ASC").last
 		render json: {
 			panchang: @panchang,
 			tithis: @tithis,
-			# tithi: date.strftime('%m/%Y') == tithi.date.strftime('%m/%Y') ? tithi : nil,
+			#tithi: date.strftime('%m/%Y') == tithi.date.strftime('%m/%Y') ? tithi : nil,
+			tithi: tithi,
 			current_month: current_month
 		}
 	end
