@@ -5,14 +5,9 @@ class Admin::PanchangTithisController < ApplicationController
 	before_action :set_panchang_tithi , only: %i[ update destroy ]
 
 	def new 
-		date = @tithi.present? ? @tithi.date : Date.today
-		get_current_month
-		get_tithis(date)
-		render json: {
-			panchang: @panchang,
-			tithis: @tithis,
-			current_month: @current_month
-		}
+		tithi = PanchangTithi.order("date asc").last rescue nil
+		current_month = @panchang.get_current_month;
+		render json: { last_tithi: tithi, month: current_month }
 	end
 
 	def create
@@ -35,9 +30,9 @@ class Admin::PanchangTithisController < ApplicationController
    	else
 	    if @tithi.save
 	    	get_tithis(Date.parse( params[:panchang_tithi][:date]))
-	    	get_current_month
+	    	current_month = @panchang.get_current_month
 	    	render json: {
-	    		tithi: @tithi, tithis: @tithis, current_month: @current_month,
+	    		tithi: @tithi, tithis: @tithis, current_month: current_month,
 	    		notice: 'Tithi is created successfully.'
 	    	}
 	    else
@@ -86,32 +81,19 @@ class Admin::PanchangTithisController < ApplicationController
 	end
 
 	def navigate_month
-		get_current_month
-		get_tithis(Date.parse(params[:date]))
+		date = Date.parse(params[:date])
+		current_month = @panchang.get_current_month
+		get_tithis(date)
+		# tithi = @panchang.panchang_tithis.order("date ASC").last
 		render json: {
 			panchang: @panchang,
 			tithis: @tithis,
-			current_month: @current_month
+			# tithi: date.strftime('%m/%Y') == tithi.date.strftime('%m/%Y') ? tithi : nil,
+			current_month: current_month
 		}
 	end
 
 	private
-	
-	def get_current_month
-		@panchang.hindi_months.each do | month |
-			tithi = month.panchang_tithis.last rescue nil
-
-			if !tithi
-				@current_month = month
-				break;
-			end
-
-			if not(tithi.tithi == 15 && tithi.paksh == "शुक्ळ पक्ष")
-				@current_month = tithi.hindi_month
-				break;
-			end
-		end
-	end
 
 	def get_tithis(date)
 		start_of_month, end_of_month = date.beginning_of_month, date.end_of_month

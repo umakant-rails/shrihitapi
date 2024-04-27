@@ -36,10 +36,10 @@ class Admin::PanchangsController < ApplicationController
   def update
     new_purshottam_month = params[:purshottam_month]
     if @panchang.update(panchang_params)
-    	get_panchangs
+    	#get_panchangs
     	render json: {
-	    	panchangs: @panchangs,
-	    	total_panchangs: @total_panchangs,
+	    	# panchangs: @panchangs,
+	    	# total_panchangs: @total_panchangs,
 	    	notice: 'Panchang is updated successfully.'
 	    }
     else
