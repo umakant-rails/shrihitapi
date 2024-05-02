@@ -108,5 +108,8 @@ Rails.application.routes.draw do
     resources :article_types, only: [:index, :show]
     resources :contexts, only: [:index, :show]
     resources :tags, only: [:index, :show]
+    resources :panchangs do 
+      get '/navigate' => 'panchangs#navigate_month', on: :member
+    end
   end
 end

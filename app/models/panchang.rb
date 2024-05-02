@@ -15,7 +15,7 @@ class Panchang < ApplicationRecord
 		if tithi && (tithi.tithi == 15 and tithi.paksh == "शुक्ळ पक्ष")
 			month = self.hindi_months.where("id>?", tithi.hindi_month_id).first
 		else
-			month = tithi.present? ? tithi.hindi_month : @panchang.hindi_months.first
+			month = tithi.present? ? tithi.hindi_month : self.hindi_months.first
 		end
 		return month
 	end

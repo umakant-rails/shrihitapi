@@ -14,17 +14,17 @@ class Admin::PanchangTithisController < ApplicationController
     @tithi = @panchang.panchang_tithis.new(panchang_tithi_params)
     is_exist = @panchang.panchang_tithis.where(panchang_tithi_params).present?
     tithis_by_dt = PanchangTithi.where(date:  params[:panchang_tithi][:date])
-    last_tithi = PanchangTithi.order("date, created_at ASC").last
+    last_tithi = @panchang.panchang_tithis.order("date, created_at ASC").last
 
     if is_exist
     	render json: { error: ["This tithi is already saved with same date."]}
     elsif tithis_by_dt.length > 1
     	render json: { error: ["There are two tithis add with this date #{ params[:panchang_tithi][:date]}"]}
-    elsif Date.parse(params[:panchang_tithi][:date]).mjd - last_tithi.date.mjd > 1
+    elsif last_tithi && (Date.parse(params[:panchang_tithi][:date]).mjd - last_tithi.date.mjd > 1)
     	render json: { error: ["The entry should be entered at date #{last_tithi.date.next_day.strftime("%d/%m/%Y")}."]}
-    elsif last_tithi.paksh == params[:panchang_tithi][:paksh] && params[:panchang_tithi][:tithi] - last_tithi.tithi > 1
+    elsif last_tithi && (last_tithi.paksh == params[:panchang_tithi][:paksh]) && (params[:panchang_tithi][:tithi] - last_tithi.tithi > 1)
     	render json: { error: ["The last entered tithi is #{last_tithi.paksh} #{last_tithi.tithi}, you should entered next successive tithi."]}
-   	elsif (last_tithi.paksh != params[:panchang_tithi][:paksh] && 
+   	elsif last_tithi && (last_tithi.paksh != params[:panchang_tithi][:paksh] && 
    			last_tithi.tithi - params[:panchang_tithi][:tithi] != 14 )
     	render json: { error: ["The last entered tithi is #{last_tithi.paksh} #{last_tithi.tithi}, you should entered next successive tithi."]}
    	else
@@ -88,7 +88,6 @@ class Admin::PanchangTithisController < ApplicationController
 		render json: {
 			panchang: @panchang,
 			tithis: @tithis,
-			#tithi: date.strftime('%m/%Y') == tithi.date.strftime('%m/%Y') ? tithi : nil,
 			tithi: tithi,
 			current_month: current_month
 		}
