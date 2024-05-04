@@ -5,7 +5,7 @@ class Admin::PanchangTithisController < ApplicationController
   before_action :set_panchang_tithi , only: %i[ update destroy ]
 
   def new 
-    tithi = PanchangTithi.order("date asc").last rescue nil
+    tithi = PanchangTithi.order("date, hindi_month_id, tithi asc").last rescue nil
     current_month = @panchang.get_current_month;
     render json: { last_tithi: tithi, month: current_month }
   end
@@ -89,7 +89,7 @@ class Admin::PanchangTithisController < ApplicationController
     date = Date.parse(params[:date])
     current_month = @panchang.get_current_month
     get_tithis(date)
-    tithi = @panchang.panchang_tithis.order("date ASC").last
+    tithi = @panchang.panchang_tithis.order("date, hindi_month_id, tithi asc").last
     render json: {
       panchang: @panchang,
       tithis: @tithis,
