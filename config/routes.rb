@@ -111,5 +111,6 @@ Rails.application.routes.draw do
     resources :panchangs do 
       get '/navigate' => 'panchangs#navigate_month', on: :member
     end
+    resources :suggestions
   end
 end

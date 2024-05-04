@@ -22,7 +22,7 @@ class Admin::PanchangTithisController < ApplicationController
     if tithi_exist && tithi_exist.date == Date.parse(date)
       render json: { error: ["This tithi is already saved with same date."]}
     elsif tithi_exist && date_diffrence(tithi_exist.date, Date.parse(date)) > 1
-      render json: { error: ["You have entered this tithi at date #{@tithi.date.strftime('%d/%m/%Y')}."]}
+      render json: { error: ["You have entered this tithi at date #{tithi_exist.date.strftime('%d/%m/%Y')}."]}
     elsif tithis_by_dt.length > 1
       render json: { error: ["There are two tithis add with this date #{ params[:panchang_tithi][:date]}"]}
     # elsif last_tithi && (Date.parse(params[:panchang_tithi][:date]).mjd - last_tithi.date.mjd > 1)
