@@ -33,7 +33,8 @@ Rails.application.routes.draw do
   resources :stories do
     get '/new' => "stories#new", on: :collection
   end
-  
+  resources :suggestions
+
   namespace :admin do
     resources :articles do
       get 'articles_by_page' => "articles#articles_by_page", on: :collection
