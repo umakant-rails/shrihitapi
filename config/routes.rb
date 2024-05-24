@@ -3,17 +3,16 @@ Rails.application.routes.draw do
   get '/current_user', to: 'current_user#index' 
   post '/users/get_role', to: 'current_user#get_user_role'
 
-  devise_for :users, path: '', path_names: {
+  devise_for :users, path: 'users', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
     registration: 'signup',
   }, controllers: {
     sessions: 'users/sessions',
-    registrations: 'users/registrations'
+    registrations: 'users/registrations',
+    passwords: 'users/passwords'
   }
-  devise_scope :user do
-    put 'users/passwords/update', to: 'users/passwords#update'
-  end
+
 
 
   resources :articles do

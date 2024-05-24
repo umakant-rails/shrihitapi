@@ -1,0 +1,25 @@
+<div class="" style="font-size: 16px">
+	<p>Welcome <%= @resource.username %>!</p>
+	<div style="">
+		You have created new account at <span style="color: #15c;">https://brijras.com</span> with following Email and Username:
+	<div>
+	<div>
+		<span style="font-weight: bold;text-decoration: none;">Email : <%= @resource.email %></span>
+	</div>
+	<div>
+		<span style="font-weight: bold;">Username :</span> <%= @resource.username %>
+	</div>
+	<div>
+		For account activation, you can confirm your account email through the link below:
+	</div>
+	<div style="margin-top: 20px;">
+		<%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token), style: 'background: #15c;color: white;padding: 8px 16px;border-radius: 6px;font-size: 16px;text-decoration: none;font-weight:bold;' %>		
+	</div>
+	<div>
+		(Please don't reply at this mail.)
+	</div>
+	<div style="margin-top: 40px;">
+		<div style="font-weight: bold;">From,</div>
+		<div>BrijRas.com</div>
+	</div>
+</div>
