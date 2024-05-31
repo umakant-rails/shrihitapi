@@ -1,9 +1,12 @@
 class Public::StoriesController < ApplicationController
 
   def index
-    @stories = Story.all
+    page = params[:page].present? ? params[:page] : 1
+    @stories = Story.page(page).per(10)
+    @total_stories = Story.all.count
     render json: {
-      stories: @stories
+      stories: @stories,
+      total_stories: @total_stories
     }
   end
 

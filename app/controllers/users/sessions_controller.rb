@@ -30,9 +30,8 @@ class Users::SessionsController < Devise::SessionsController
   def respond_with(resource, _opts = {})
     if resource
       render json: {
-        status: {code: 200, message: 'Logged in sucessfully.'},
         user: UserSerializer.new(resource).serializable_hash[:data][:attributes],
-        role: resource.role_id
+        role: resource.role_id, notice: 'Logged in sucessfully.'
       }, status: :ok
     end
   end

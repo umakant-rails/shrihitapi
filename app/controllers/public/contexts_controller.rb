@@ -1,9 +1,12 @@
 class Public::ContextsController < ApplicationController
   def index
-    @contexts = Context.order("name ASC")
-    
+    page = params[:page].present? ? params[:page] : 1
+    @contexts = Context.page(page).per(10)
+    @total_contexts = Context.all.count
+
     render json: {
-      contexts: @contexts
+      contexts: @contexts,
+      total_contexts: @total_contexts
     }
   end
 

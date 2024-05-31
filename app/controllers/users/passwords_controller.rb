@@ -25,6 +25,7 @@ class Users::PasswordsController < Devise::PasswordsController
       @password_action = 'update_by_token'
       super
     else
+      @password_action = 'update_without_token'
       if !current_user.compare_current_passowrd(params[:user][:current_password])
         render json: {error: ['Your current password is wrong.'], password_changed: false}
       elsif (params[:user][:password] == params[:user][:password_confirmation])
@@ -51,11 +52,15 @@ class Users::PasswordsController < Devise::PasswordsController
   private
     def respond_with(resource, _opts = {})
       if @user.errors.full_messages.present?
-        render json: { error: @user.errors.full_messages }
-      elsif @password_action == 'update_by_token'
+        render json: { 
+          action_status: false,
+          error: @user.errors.full_messages 
+        }
+      elsif @password_action == 'update_by_token' || @password_action == 'update_without_token'
         render json: { notice: 'Your password has been updated.' }
       elsif @password_action == 'create'
         render json: {
+          action_status: true,
           notice: 'You will receive an email with instructions on how to reset your password in a few minutes.'
         }
       end
