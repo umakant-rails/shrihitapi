@@ -65,7 +65,7 @@ class StoriesController < ApplicationController
 
   def update
     if @story.update(story_params)
-      render json: { story: @story, notice: "संत चरित्र/प्रेरक प्रसंग को सफलतापूर्वक अद्यतित कर दिया गया है."}
+      render json: { updated_story: @story, notice: "संत चरित्र/प्रेरक प्रसंग को सफलतापूर्वक अद्यतित कर दिया गया है."}
     else
       render json: { story: @story.errors, error: @story.errors.full_messages }
     end

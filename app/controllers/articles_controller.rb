@@ -27,7 +27,7 @@ class ArticlesController < ApplicationController
   def new
     get_article_data
     # article = Article.new({author_id: author.id, context_id: context.id})
-    
+
     render json: {
       tags: @tags,
       contexts: @contexts,
@@ -56,6 +56,7 @@ class ArticlesController < ApplicationController
 
     if params[:action_type] == "edit"
       get_article_data
+      article_tmp = @article.attributes.merge({ tags: @article.tags })
       render json: {
         tags: @tags,
         contexts: @contexts,

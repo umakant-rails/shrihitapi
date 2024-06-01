@@ -32,7 +32,7 @@ class SuggestionsController < ApplicationController
 
   def update
   	if @suggestion.update(suggestion_params);
-  		render json: { suggestion: @suggestion, notice: "Suggestion was successfully updated."}
+  		render json: { updated_suggestion: @suggestion, notice: "Suggestion was successfully updated."}
   	else 
   		render json: { suggestion: @suggestion, error: @suggestion.errors}
   	end

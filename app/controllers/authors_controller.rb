@@ -10,7 +10,7 @@ class AuthorsController < ApplicationController
       authors = current_user.authors.where("name like '#{params[:start_with]}%'").page(page).per(10)
     else
       total_authors = current_user.authors.count
-      authors = current_user.authors.page(page).per(10)   
+      authors = current_user.authors.order("created_at DESC").page(page).per(10)   
     end
 
     authors_tmp = authors.map do | author |
@@ -37,7 +37,7 @@ class AuthorsController < ApplicationController
     @author = current_user.authors.new(author_params)
 
     if @author.save
-      render json: { author: @author, notice: "Author was created successfully."}
+      render json: { created_author: @author, notice: "Author was created successfully."}
     else
       render json: { author: @author.errors, error: @author.errors.full_messages }
     end
@@ -55,9 +55,9 @@ class AuthorsController < ApplicationController
     # PUT/PATCH /authors or /authors.json
   def update
     if @author.update(author_params)
-      render json: { author: @author, notice: "रचनाकार को सफलतापूर्वक अद्यतित कर दिया गया है."}
+      render json: { updated_author: @author, notice: "रचनाकार को सफलतापूर्वक अद्यतित कर दिया गया है."}
     else
-      render json: { author: @author.errors, error: @author.errors.full_messages }
+      render json: { updated_author: @author.errors, error: @author.errors.full_messages }
     end
   end
 
@@ -66,12 +66,18 @@ class AuthorsController < ApplicationController
     if @author.destroy
       page = params[:page].present? ? params[:page] : 1
       total_authors = current_user.authors.count
-      authors = current_user.authors.page(page).per(10)  
+      authors = current_user.authors.order("created_at DESC").page(page).per(10)  
+
+      authors_tmp = authors.map do | author |
+        author.attributes.merge({
+          articles: author.articles
+        })
+      end
 
       render json: { 
-        author: @author,
+        deleted_author: @author,
         total_authors: total_authors,
-        authors: authors,
+        authors: authors_tmp,
         current_page: page,
         notice: "रचना को सफलतापूर्वक डिलीट कर दिया गया है."
       }
