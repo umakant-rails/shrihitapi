@@ -33,6 +33,9 @@ Rails.application.routes.draw do
     get '/new' => "stories#new", on: :collection
   end
   resources :suggestions
+  resources :panchangs, only: [:index] do
+    get '/navigate' => 'panchangs#navigate_month', on: :member
+  end
 
   namespace :admin do
     resources :articles do
