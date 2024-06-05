@@ -40,6 +40,7 @@ class Admin::PanchangsController < ApplicationController
     	render json: {
 	    	# panchangs: @panchangs,
 	    	# total_panchangs: @total_panchangs,
+        updated_panchang: @panchang,
 	    	notice: 'Panchang is updated successfully.'
 	    }
     else

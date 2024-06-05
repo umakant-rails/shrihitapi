@@ -60,7 +60,7 @@
   def update
     if @scripture_article.update(scripture_article_params)
       render json: {
-        scripture_article: @scripture_article,
+        updated_scr_article: @scripture_article,
         notice: "Scripture Article is updated successfully."
       }
     else

@@ -93,13 +93,18 @@ class Admin::StrotaArticlesController < ApplicationController
 
   def update_index
     @article = StrotaArticle.find(params[:id])
-    
-    if @article.update(index: params[:new_index])
-      @strotum_articles = @strotum.strota_articles.order("index ASC")
+    if @article.index === params[:new_index]
       render json: {
-        strotum_articles: @strotum_articles,
-        notice: "रचना का अनुक्रम अद्यतित कर दिया गया है."
+        error: ["रचना के इन्डेक्स मे कोई परिवर्तन नही किया गया है।"]
       }
+    else
+      if @article.update(index: params[:new_index])
+        @strotum_articles = @strotum.strota_articles.order("index ASC")
+        render json: {
+          strotum_articles: @strotum_articles,
+          notice: "रचना का अनुक्रम अद्यतित कर दिया गया है."
+        }
+      end
     end
 
   end

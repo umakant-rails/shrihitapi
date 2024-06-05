@@ -90,7 +90,7 @@ class Admin::StrotaController < ApplicationController
   def update
     if @strotum.update(strotum_params)
       render json: { 
-        strotum: @strotum, 
+        updated_strotum: @strotum, 
         notice: "Strotum was successfully updated." 
       }
     else
