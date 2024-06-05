@@ -47,8 +47,8 @@ class Admin::AuthorsController < ApplicationController
     def get_authors_with_params(page)      
       arr = []
 
-      arr.push('is_approved=true') if params[:status].present? && params[:status] == "approved"
-      arr.push('(is_approved is null or is_approved=false)') if params[:status].present? && params[:status] == "pending"
+      arr.push('is_approved is true') if params[:status].present? && params[:status] == "approved"
+      arr.push('(is_approved is not true)') if params[:status].present? && params[:status] == "pending"
       arr.push("name like '#{params[:start_with]}%'") if params[:start_with].present?
 
 
