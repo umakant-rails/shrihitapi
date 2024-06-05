@@ -63,7 +63,7 @@ class Public::AuthorsController < ApplicationController
     @sant = Author.where(name_eng: params[:id].strip).first rescue nil
 
     render json: {
-      sants: @sants,
+      related_sants: @sants,
       sant: @sant
     }
   end

@@ -3,7 +3,7 @@ class Public::ArticlesController < ApplicationController
   def index
     page = params[:page].present? ? params[:page] : 1
 
-    @total_articles = Article.count
+    @total_articles = Article.where("is_approved=?", true).count
     @articles = Article.where("is_approved=?", true).order("created_at DESC").page(page).per(10)
     @authors = Author.order("created_at DESC")
     @contexts = Context.order("created_at DESC")

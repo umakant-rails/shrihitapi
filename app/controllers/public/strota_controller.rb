@@ -26,20 +26,15 @@ class Public::StrotaController < ApplicationController
   end
 
   def show
-    strotum = Strotum.where(title: params[:id]).first 
+    strotum = Strotum.where(name: params[:id]).first 
     strotum_articles = strotum.strota_articles.joins(:article_type).order("index ASC") rescue []
-    strota = Strotum.where("strota_type_id = ? and id not in (?)", strotum.strota_type_id, strotum.id) rescue []
+    # strota = Strotum.where("strota_type_id = ? and id not in (?)", strotum.strota_type_id, strotum.id) rescue []
+    strota = Strotum.where("id not in (?)", strotum.id) rescue []
 
     strotum_articles = strotum_articles.map do |sa| 
       sa.attributes.merge({article_type: sa.article_type.name})
     end
 
-    # strota = strota.map do | strotum |
-    #   strotum.attributes.merge({
-    #     strota_type: strotum.strota_type.name, articles: strotum.strota_articles
-    #   })
-    # end
-    
     render json: {
       strotum: strotum,
       strotum_articles: strotum_articles,
