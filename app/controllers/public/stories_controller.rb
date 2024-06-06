@@ -11,7 +11,7 @@ class Public::StoriesController < ApplicationController
   end
 
   def show
-    @story = Story.where(title: params[:id])[0] rescue nil
+    @story = Story.where(title: params[:id].strip)[0] rescue nil
     @stories = @story.present? ? Story.where("id not in(?)", @story.id).first(10) : Story.first(10)
     
     render json: {

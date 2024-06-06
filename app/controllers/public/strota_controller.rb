@@ -26,7 +26,7 @@ class Public::StrotaController < ApplicationController
   end
 
   def show
-    strotum = Strotum.where(name: params[:id]).first 
+    strotum = Strotum.where(title: params[:id].strip).first 
     strotum_articles = strotum.strota_articles.joins(:article_type).order("index ASC") rescue []
     # strota = Strotum.where("strota_type_id = ? and id not in (?)", strotum.strota_type_id, strotum.id) rescue []
     strota = Strotum.where("id not in (?)", strotum.id) rescue []

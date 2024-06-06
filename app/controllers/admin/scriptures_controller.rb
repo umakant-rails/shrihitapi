@@ -68,7 +68,7 @@ class Admin::ScripturesController < ApplicationController
 
     if @scripture.save
       render json: {
-        scripture: @scripture,
+        created_scripture: @scripture,
         notice: "रसिक वाणी/ग्रन्थ सफलतापूर्वक बनाया गया।"
       } 
     else
@@ -85,7 +85,7 @@ class Admin::ScripturesController < ApplicationController
   def update    
     if @scripture.update(scripture_params)
       render json: { 
-        scripture: @scripture, 
+        updated_scripture: @scripture, 
         notice: "रसिक वाणी/ग्रन्थ सफलतापूर्वक अद्यतित किया गया।" 
       }
     else
