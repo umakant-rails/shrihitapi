@@ -55,10 +55,10 @@ class Admin::AuthorsController < ApplicationController
       if arr.present?
         queryy = arr.join(' and ')
         @total_authors = Author.where(queryy).count
-        @authors = Author.where(queryy).page(page).per(10)
+        @authors = Author.where(queryy).order("name ASC").page(page).per(10)
       else
         @total_authors = Author.count
-        @authors = Author.order("name ASC").page(page).per(10)   
+        @authors = Author.order("name ASC").order("name ASC").page(page).per(10)   
       end
 
       @authors = @authors.map do | author |
