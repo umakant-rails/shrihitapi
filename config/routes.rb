@@ -48,6 +48,8 @@ Rails.application.routes.draw do
     resources :tags do
       post 'tag_approved' => "tags#tag_approved", on: :member
     end
+    resources :user_mgmts do      
+    end
 
     resources :dashboards, only: [:index]
     resources :contexts
