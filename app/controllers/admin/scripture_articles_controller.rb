@@ -6,7 +6,6 @@
 
   def index
     page = params[:page].present? ? params[:page] : 1
-    
     get_page_by_articles(page)
 
     render json: {
@@ -19,6 +18,9 @@
   def show
     @scripture_article = ScriptureArticle.find(params[:id])
     @article_types = ArticleType.all
+    @scripture_article = @scripture_article.attributes.merge({
+      section_id: @scripture_article.chapter.parent_id
+    })
 
     render json: {
       scripture: @scripture,

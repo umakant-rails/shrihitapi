@@ -88,4 +88,28 @@ class Scripture < ApplicationRecord
     return stories, total_stories
   end
 
+  def get_granth_articles(chapter_id, page)
+    articles, total_articles = nil, nil
+
+    if chapter_id.present?
+      # articles = self.chapters.where("chapter_id=?", chapter_id).joins(:scripture_articles).page(page).per(10) rescue nil
+      articles = ScriptureArticle.joins(:chapter).where("chapters.scripture_id=? and chapters.id=?", 
+        self.id, chapter_id).page(page).per(10)
+      total_articles = self.chapters.where("chapter_id=?", chapter_id).joins(:scripture_articles).count rescue 0
+
+      articles = articles && articles.map do | article |
+        # article = a.scripture_article
+        article.attributes.merge({article_type: article.article_type.name})
+      end
+    else
+      articles = self.chapters.first.scripture_articles.order("index ASC").page(page).per(10) rescue nil
+      total_articles = self.chapters.first.scripture_articles.count rescue 0
+      articles = articles.map { | article | 
+        article.attributes.merge({article_type: article.article_type.name})
+      }
+    end
+
+    return articles, total_articles
+  end
+
 end
