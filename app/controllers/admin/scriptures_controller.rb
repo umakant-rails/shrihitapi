@@ -1,19 +1,12 @@
 class Admin::ScripturesController < ApplicationController
   before_action :authenticate_user!
   # before_action :verify_admin
-  before_action :set_scripture, only: %i[ show edit update destroy ]
+  before_action :set_scripture, only: %i[ show edit update destroy get_articles get_stories delete_scr_article delete_scr_story]
 
   # GET /admin/scriptures or /admin/scriptures.json
   def index
     page = params[:page].present? ? params[:page] : 1
-
-    if params[:scripture_type_id].present?
-      @scriptures = Scripture.where("scripture_type_id = ?", params[:scripture_type_id]).page(page).per(10)
-      @total_scriptures = Scripture.where("scripture_type_id = ?", params[:scripture_type_id]).count
-      @scripture_types = ScriptureType.order("name ASC")
-    else
-      get_scripture_by_page(page)
-    end
+    get_scripture_by_page(page)
 
     render json: {
       scriptures: @scriptures,
@@ -34,15 +27,6 @@ class Admin::ScripturesController < ApplicationController
         authors: @authors,
         scripture: @scripture
       }
-    else
-      render json: {
-        scripture: @scripture,
-        sections: @scripture.sections,
-        chapters: @scripture.chapters,
-        articles: @scripture.scripture_articles.page(1).per(10),
-        total_articles: @scripture.scripture_articles.count,
-        current_page: 1
-      }
     end
   end
 
@@ -55,11 +39,6 @@ class Admin::ScripturesController < ApplicationController
       scripture_types: @scripture_types,
       authors: @authors
     }
-  end
-
-  # GET /admin/scriptures/1/edit
-  def edit
-    @scripture_types = ScriptureType.all
   end
 
   # POST /admin/scriptures or /admin/scriptures.json
@@ -78,7 +57,6 @@ class Admin::ScripturesController < ApplicationController
         notice: "रसिक वाणी/ग्रन्थ सफलतापूर्वक बनाया गया।"
        } 
     end
-
   end
 
   # PATCH/PUT /admin/scriptures/1 or /admin/scriptures/1.json
@@ -110,6 +88,76 @@ class Admin::ScripturesController < ApplicationController
     }
   end
 
+  def get_articles
+    page = params[:page].present? ? params[:page] : 1
+    articles, total_articles = nil, nil
+
+    if @scripture.scripture_type.name == "रसिक वाणी"
+      articles, total_articles = @scripture.get_vani_articles(params[:chapter_id], page)
+    elsif @scripture.scripture_type.name == "ग्रन्थ"
+      articles, total_articles = @scripture.get_granth_articles(params[:chapter_id], page)
+    else
+      articles, total_articles = @scripture.get_cs_articles(params[:chapter_id], page)
+    end
+
+    render json: {
+      scripture: @scripture,
+      articles: articles,
+      total_articles: total_articles,
+      sections: (@scripture.sections rescue nil),
+      chapters: (@scripture.chapters rescue nil),
+      current_page: page
+    }
+  end
+
+  def get_stories
+    page = params[:page].present? ? params[:page] : 1
+    stories, total_stories = @scripture.get_stories(page)
+
+    render json: {
+      scripture: @scripture,
+      stories: stories,
+      total_stories: total_stories,
+      sections: (@scripture.sections rescue nil),
+      chapters: (@scripture.chapters rescue nil),
+      current_page: page
+    }
+  end
+
+  def delete_scr_article
+    page = params[:page].present? ? params[:page] : 1
+    if @scripture.scripture_type.name == "रसिक वाणी"
+      Article.find(params[:article_id]).destroy rescue nil
+    else
+      @scripture.cs_articles.find(params[:article_id]).destroy
+    end
+    articles, total_articles = @scripture.get_articles(params[:chapter_id], page)
+
+    render json: {
+      scripture: @scripture,
+      articles: articles,
+      total_articles: total_articles,
+      sections: (@scripture.sections rescue nil),
+      chapters: (@scripture.chapters rescue nil),
+      current_page: page
+    }
+  end
+
+  def delete_scr_story
+    page = params[:page].present? ? params[:page] : 1
+    @scripture.stories.find(params[:story_id]).destroy
+    stories, total_stories = @scripture.get_stories(page)
+
+    render json: {
+      scripture: @scripture,
+      stories: stories,
+      total_stories: total_stories,
+      sections: (@scripture.sections rescue nil),
+      chapters: (@scripture.chapters rescue nil),
+      current_page: page
+    }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_scripture
@@ -122,11 +170,17 @@ class Admin::ScripturesController < ApplicationController
     end
 
     def get_scripture_by_page(page)
-      scriptures_tmp = Scripture.all.page(page).per(10)
-      @total_scriptures = Scripture.count
-      @scripture_types= ScriptureType.order("name ASC")
+      if params[:scripture_type_id].present?
+        @scriptures = Scripture.where("scripture_type_id = ?", params[:scripture_type_id]).page(page).per(10)
+        @total_scriptures = Scripture.where("scripture_type_id = ?", params[:scripture_type_id]).count
+        @scripture_types = ScriptureType.order("name ASC")
+      else
+        @scriptures = Scripture.all.page(page).per(10)
+        @total_scriptures = Scripture.count
+        @scripture_types= ScriptureType.order("name ASC")
+      end
 
-      @scriptures = scriptures_tmp.map do |scripture|
+      @scriptures = @scriptures.map do |scripture|
         scripture.attributes.merge({
           scripture_type: scripture.scripture_type.name,
           author: scripture.author ? scripture.author.name : '-'

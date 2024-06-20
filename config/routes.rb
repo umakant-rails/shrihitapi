@@ -63,6 +63,11 @@ Rails.application.routes.draw do
     end
     resources :scriptures do 
       get '/new' => "scriptures#new", on: :collection
+      get '/get_articles' => "scriptures#get_articles", on: :member
+      get '/get_stories' => "scriptures#get_stories", on: :member
+      delete '/articles/:article_id' => "scriptures#delete_scr_article", on: :member
+      delete '/stories/:story_id' => "scriptures#delete_scr_story", on: :member
+
       resources :chapters
       resources :scripture_articles do
         get '/new' => "scripture_articles#new", on: :collection
