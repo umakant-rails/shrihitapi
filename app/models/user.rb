@@ -8,7 +8,6 @@ class User < ApplicationRecord
     :recoverable, :jwt_authenticatable, jwt_revocation_strategy: self
 
   validates :username, :email, presence: true
-
   validates_length_of :password, :within => 8..20, :if => :password_required?
 
   has_many :articles, dependent: :nullify
