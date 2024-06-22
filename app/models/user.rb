@@ -45,6 +45,10 @@ class User < ApplicationRecord
     self.role.name == "Contributor"
   end
 
+  def has_admin_accessibily
+    self.role.name == "Admin" || self.role.name == "Super Admin"
+  end
+
   def compare_current_passowrd(password)
     return User.find_for_authentication(email:self.email).valid_password?(password)
   end
