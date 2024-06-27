@@ -260,7 +260,7 @@ DEPENDENCIES
   fast_jsonapi
   groupdate
   kaminari
-  pg
+  pg (~> 1.5.4)
   puma (~> 5.0)
   rack-cors
   rails (~> 7.0.8)
