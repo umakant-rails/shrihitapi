@@ -41,7 +41,7 @@ gem 'devise'
 gem 'devise-jwt'
 gem 'jwt'
 gem 'fast_jsonapi'
-gem 'dotenv-rails', groups: [:development, :test]
+gem 'dotenv-rails', groups: [:development, :test, :production]
 gem 'kaminari'
 gem "groupdate"
 
