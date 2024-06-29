@@ -39,9 +39,8 @@ gem 'rack-cors'
 gem 'pg', '~> 1.5.4'
 gem 'devise'
 gem 'devise-jwt'
-gem 'jwt'
 gem 'fast_jsonapi'
-gem 'dotenv-rails', groups: [:development, :test, :production]
+gem 'dotenv-rails', groups: [:development, :test]
 gem 'kaminari'
 gem "groupdate"
 
