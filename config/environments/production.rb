@@ -81,18 +81,19 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
-  config.action_mailer.default_url_options = { host: ENV['DOMAIN_NAME'] }
+  config.action_mailer.default_url_options = { host: Rails.application.credentials.domain_name }
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address:              "smtp.office365.com", 
+    address:              "smtp.office365.com",
     port:                 587,
-    domain:               ENV['DOMAIN_NAME'],
-    user_name:            ENV['EMAIL'],
-    password:             ENV['EMAIL_PASSWORD'],
-    authentication:       'login',
+    domain:               Rails.application.credentials.domain_name,
+    user_name:            Rails.application.credentials.email, #ENV['EMAIL'],
+    password:             Rails.application.credentials.email_password, #ENV.fetch('EMAIL_PASSWORD'),
+    authentication:      'login',
     enable_starttls_auto: true
   }
+
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
