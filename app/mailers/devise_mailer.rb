@@ -1,5 +1,5 @@
 class DeviseMailer < Devise::Mailer
-  default from: Rails.application.credentials.email
+  default from: Rails.application.secrets.email
   before_action :set_host_name
 
   def confirmation_instructions(record, token, opts={})
