@@ -23,7 +23,7 @@ class Admin::ChaptersController < ApplicationController
   def create
     @chapter = @scripture.chapters.new(chapter_params)
     # @chapter = Chapter.new(chapter_params)
-
+    
     if @chapter.save
       
       get_chapters_by_data_type(@chapter.is_section)
@@ -135,7 +135,7 @@ class Admin::ChaptersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def chapter_params
-      params.fetch(:chapter, {}).permit(:name, :is_section, :parent_id, :scripture_id, :index)
+      params.fetch(:chapter, {}).permit(:name, :is_section, :parent_id, :scripture_id, :index, :description)
     end
 
     def set_scripture

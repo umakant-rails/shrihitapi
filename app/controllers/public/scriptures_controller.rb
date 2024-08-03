@@ -39,10 +39,10 @@ class Public::ScripturesController < ApplicationController
         scripture_type: @scripture.scripture_type ? @scripture.scripture_type.name : 'NA',
         author: @scripture.author ? @scripture.author.name : 'NA',
       })
-    elsif @scripture.present? && @scripture.scripture_type.name == "नवीन संकलन" and scripture.scripture_type.name == "प्रचलित संकलन"
+    elsif @scripture.present? && @scripture.scripture_type.name == "नवीन संकलन" and @scripture.scripture_type.name == "प्रचलित संकलन"
       @articles = @scripture.cs_articles.joins(:article)
 
-      @articles = @articles.map do | a |
+      @articles = @articles && @articles.map do | a |
         article = a.article
         article.attributes.merge({
           author: article.author.name,
