@@ -11,8 +11,11 @@ class ApplicationController < ActionController::API
   private 
 
   def varify_user_for_admin_activities
+    #head :unauthorized if get_current_user.nil?
     if params[:controller].index('admin/').present? and !(current_user && current_user.has_admin_accessibily)
-      render json: { error: ['You are not authrized for this page or action.']},  status: 401
+      # head :unauthorized
+      render json: { error: ['You are not authrized for this page or action.'], status: :unauthorized}
+      # head :unauthorized #if get_current_user.nil?
     end
   end
 
