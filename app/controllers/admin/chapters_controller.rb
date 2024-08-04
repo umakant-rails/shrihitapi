@@ -23,16 +23,16 @@ class Admin::ChaptersController < ApplicationController
   def create
     @chapter = @scripture.chapters.new(chapter_params)
     # @chapter = Chapter.new(chapter_params)
-    
-    if @chapter.save
-      
+    page = params[:page].present? ? params[:page] : 1
+
+    if @chapter.save  
       get_chapters_by_data_type(@chapter.is_section)
 
       render json: {
         chapters: @chapters,
         sections: @sections,
         total_chapters: @total_chapters,
-        current_page: 1,
+        current_page: page,
         notice: "#{@chapter.is_section ? 'Section': 'Chapter'} is created Successfully."
       }
     else
