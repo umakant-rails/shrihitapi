@@ -142,6 +142,25 @@ class ArticlesController < ApplicationController
     }
   end
 
+  def search_articles
+    page = params[:page]
+    search_term = params[:term].strip rescue ''
+
+    @articles = Article.where("is_approved=TRUE and (content like ? or LOWER(hindi_title) like ?  or LOWER(english_title) like ?)", 
+      "%#{search_term}%", "%#{search_term}%", "%#{search_term}%")
+    articles = page.present? ? @articles.page(page).per(10) : @articles
+    total_articles = @articles.count
+
+    articles_tmp = articles.map do | article |
+      article.attributes.merge({author: article.author.name, article_type: article.article_type.name})
+    end
+
+    render json: {
+      articles: articles_tmp,
+      total_articles: total_articles
+    }
+  end
+
   private
 
     def article_params
