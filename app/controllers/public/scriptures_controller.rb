@@ -57,4 +57,17 @@ class Public::ScripturesController < ApplicationController
     }
   end
 
+  def get_cs_articles
+    @scripture = Scripture.where(name_eng: params[:id].strip).first rescue nil
+    @chapters = @scripture.chapters.left_joins(:articles).order("chapters.index ASC")
+    # debugger
+    @chapters = @chapters.uniq
+    @chapters = @chapters.map{ |chapter | chapter.attributes.merge({articles: chapter.articles}) }
+    
+    render json: {
+      scripture: @scripture,
+      chapters: @chapters,
+    }
+  end
+
 end

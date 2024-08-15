@@ -38,7 +38,7 @@ class Scripture < ApplicationRecord
   def get_cs_articles(chapter_id, page)
     articles, total_articles = nil, nil
     if chapter_id.present?
-      article = self.cs_articles.joins(:article)
+      articles = self.cs_articles.joins(:article)
         .where("chapter_id=?", chapter_id).order("index ASC").page(page).per(10)
       total_articles = self.cs_articles.where("chapter_id=?", chapter_id).count
     else
@@ -46,7 +46,7 @@ class Scripture < ApplicationRecord
       total_articles = self.cs_articles.count
     end
 
-    articles = articles.map do |a| 
+    articles = articles && articles.map do |a| 
       article = a.article
       article.attributes.merge({
         cs_article_id: a.id,

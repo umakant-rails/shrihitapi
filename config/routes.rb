@@ -112,7 +112,9 @@ Rails.application.routes.draw do
         get '/sants' => "authors#sants", as: :sants, on: :collection
         get '/sant_biography' => "authors#sant_biography", as: :sant_biography, on: :member
       end
-      resources :scriptures , only: [:index, :show]
+      resources :scriptures , only: [:index, :show]  do
+        get '/cs_articles' => "scriptures#get_cs_articles", as: :cs_articles, on: :member
+      end
       resources :stories, only: [:index, :show]
       resources :strota, only: [:index, :show] do 
         get '/type/:strota_type' => "strota#get_strota_by_type", as: :get_strota_by_type, on: :collection

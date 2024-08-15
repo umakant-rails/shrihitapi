@@ -105,7 +105,7 @@ class Admin::ScripturesController < ApplicationController
       articles: articles,
       total_articles: total_articles,
       sections: (@scripture.sections rescue nil),
-      chapters: (@scripture.chapters rescue nil),
+      chapters: (@scripture.chapters.order("index ASC") rescue nil),
       current_page: page
     }
   end
