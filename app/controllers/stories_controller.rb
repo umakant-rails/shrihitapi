@@ -48,7 +48,7 @@ class StoriesController < ApplicationController
   end
 
   def show
-    if params[:action_type] == "edit"
+    if @story && params[:action_type] == "edit"
       @sants = Author.where(is_saint:true)
       @scripture_type = ScriptureType.where(name: "कथायें")[0]
       @scriptures = @scripture_type.scriptures rescue []
@@ -58,8 +58,10 @@ class StoriesController < ApplicationController
         sants: @sants,
         scriptures: @scriptures,
       }
-    else
+    elsif @story
       render json: { story: @story }
+    else
+      render json: { story: nil, notice: "You are not authorised for this article." }
     end
   end
 
@@ -99,7 +101,7 @@ class StoriesController < ApplicationController
   private
 
     def set_story
-      @story = Story.find(params[:id])
+      @story = current_user.stories.find(params[:id]) rescue nil
     end
 
     def story_params

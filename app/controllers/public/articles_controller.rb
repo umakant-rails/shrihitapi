@@ -49,7 +49,7 @@ class Public::ArticlesController < ApplicationController
 
   def search_articles
     page = params[:page]
-    search_term = params[:term]
+    search_term = params[:term].strip rescue ''
 
     @articles = Article.where("is_approved=TRUE and (content like ? or LOWER(hindi_title) like ?)", 
       "%#{search_term.strip}%", "%#{search_term.strip}%")

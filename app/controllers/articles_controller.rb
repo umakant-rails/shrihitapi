@@ -53,8 +53,7 @@ class ArticlesController < ApplicationController
   end
 
   def show
-
-    if params[:action_type] == "edit"
+    if @article and params[:action_type] == "edit"
       get_article_data
       article_tmp = @article.attributes.merge({ tags: @article.tags })
       render json: {
@@ -66,7 +65,7 @@ class ArticlesController < ApplicationController
         scriptures: @scriptures,
         article: article_tmp
       }
-    else
+    elsif @article
       comments_tmp = @article.get_comments
 
       article_tmp = @article.attributes.merge({
@@ -79,6 +78,8 @@ class ArticlesController < ApplicationController
       render json: {
         article: article_tmp
       }
+    else 
+      render json: { article: nil, notice: "This content is not available for you."}
     end
   end
 
@@ -170,7 +171,7 @@ class ArticlesController < ApplicationController
     end
 
     def set_article
-      @article = Article.find(params[:id])
+      @article = current_user.articles.find(params[:id]) rescue nil
     end
 
     def get_article_data
