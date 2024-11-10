@@ -50,10 +50,10 @@ class Admin::CompiledScripturesController < ApplicationController
     get_articles_by_params
 
     render json: {
-      contexts: @contexts,
-      raags: @raags,
-      authors: @authors,
-      article_types: @article_types,
+      # contexts: @contexts,
+      # raags: @raags,
+      # authors: @authors,
+      # article_types: @article_types,
       scripture: @scripture,
       chapters: @scripture.chapters,
       total_articles: @total_articles,
@@ -207,12 +207,12 @@ class Admin::CompiledScripturesController < ApplicationController
         @added_articles = @scripture.cs_articles rescue nil
       end
 
-      param_arr.push("article_type_id = #{params[:article_type_id]}") if params[:article_type_id].present?
-      param_arr.push("author_id = #{params[:author_id]}") if params[:author_id].present?
-      param_arr.push("raag_id = #{params[:raag_id]}") if params[:raag_id].present?
-      param_arr.push("context_id = #{params[:context_id]}") if params[:context_id].present?
-      param_arr.push("hindi_title like '%#{params[:term]}%' or content like '%#{params[:term]}%'") if params[:term].present?
-
+      # param_arr.push("article_type_id = #{params[:article_type_id]}") if params[:article_type_id].present?
+      # param_arr.push("author_id = #{params[:author_id]}") if params[:author_id].present?
+      # param_arr.push("raag_id = #{params[:raag_id]}") if params[:raag_id].present?
+      # param_arr.push("context_id = #{params[:context_id]}") if params[:context_id].present?
+      param_arr.push("hindi_title like '#{params[:starts_with]}%'") if params[:starts_with].present?
+      param_arr.push("(hindi_title like '%#{params[:term]}%' or content like '%#{params[:term]}%')") if params[:term].present?
       queryy = param_arr.join(" and ")
 
       if queryy.present? and @added_articles.present?
