@@ -51,6 +51,7 @@ class Scripture < ApplicationRecord
       article.attributes.merge({
         cs_article_id: a.id,
         author: article.author.name,
+        chapter: a.chapter.name,
         article_type: article.article_type.name
       })
     end

@@ -79,9 +79,10 @@ Rails.application.routes.draw do
         get '/add_articles_page' => "compiled_scriptures#add_articles_page", as: :add_articles_page, on: :member
         post '/add_article' => "compiled_scriptures#add_article", as: :add_articles, on: :member
         post '/remove_article' => "compiled_scriptures#remove_article", as: :remove_articles, on: :member
-        get '/get_articles_for_indexing' => "compiled_scriptures#get_articles_for_indexing", as: :edit_index_page, on: :member
+        get '/get_cs_articles' => "compiled_scriptures#get_cs_articles", as: :get_cs_articles, on: :member
         put "/update_index" => "compiled_scriptures#update_index", as: :update_index, on: :member    
         post '/delete_article' => "compiled_scriptures#delete_article", as: :delete_article, on: :member
+        post '/update_article_chapter' => "compiled_scriptures#update_article_chapter", as: :update_article_chapter, on: :member
       end
       resources :panchangs do 
         post '/populate_panchang' => "panchangs#populate_panchang", on: :member, as: :populate_panchang

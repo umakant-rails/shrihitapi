@@ -3,31 +3,12 @@ class Admin::CompiledScripturesController < ApplicationController
   # before_action :verify_admin
   before_action :set_scripture
   # before_action :set_scripture, only: %i[add_articles_page add_article remove_article]
-
-  # def index
-  #   @scripture_type = ScriptureType.where(name: "प्रचलित संकलन").first
-  #   @scriptures = @scripture_type.scriptures
-  # end
   
   def show
     page = params[:page].present? ? params[:page] : 1
     @chapters = @scripture.chapters.order("index ASC")
     @chapter = @chapters[0]
-    # if @chapters.present?
-    #   @articles = @chapters[0].cs_articles.order("index ASC").page(page).per(10)
-    #   @total_articles = @chapters[0].cs_articles.count
-    # else
-    #   @articles = @scripture.cs_articles.order("index ASC").page(page).per(10)
-    #   @total_articles = @scripture.cs_articles.count
-    # end
 
-    # @articles = @articles.map do |a| 
-    #   a.attributes.merge({
-    #     article_type: a.article.article_type.name,
-    #     cs_article_id: a.id,
-    #     hindi_title: a.article.hindi_title,
-    #   })
-    # end
     get_articles_by_page(page)
 
     render json: {
@@ -78,6 +59,7 @@ class Admin::CompiledScripturesController < ApplicationController
     
     if params[:cs_article][:chapter_id].present? 
       @chapter = Chapter.find(params[:cs_article][:chapter_id])
+      params[:cs_article][:index] = @chapter.cs_articles.present? ? @chapter.cs_articles.length + 1 : 1
       is_article_exist = @chapter.cs_articles.where({article_id: params[:cs_article][:article_id]})
     else
       is_article_exist = @scripture.cs_articles.where({article_id: params[:cs_article][:article_id]})
@@ -122,7 +104,8 @@ class Admin::CompiledScripturesController < ApplicationController
     end
   end
 
-  def get_articles_for_indexing
+  # action for compile scripture show page
+  def get_cs_articles
     page = params[:page].present? ? params[:page] : 1
     @chapter = Chapter.find(params[:chapter_id]) rescue nil
 
@@ -194,6 +177,22 @@ class Admin::CompiledScripturesController < ApplicationController
     }
   end
 
+  def update_article_chapter
+    page = params[:page]
+    @cs_article = CsArticle.find(params[:cs_article_id])
+    @chapter = @cs_article.chapter
+    @cs_article.update(chapter_id: params[:new_chapter_id])
+    
+    get_articles_by_page(page);
+
+    render json: {
+      scripture: @scripture,
+      articles: @articles,
+      total_articles: @total_articles,
+      current_page: page,
+    }
+  end
+
   private
 
     def get_articles_by_params
@@ -259,6 +258,7 @@ class Admin::CompiledScripturesController < ApplicationController
         a.attributes.merge({
           article_type: a.article.article_type.name,
           cs_article_id: a.id,
+          chapter: a.chapter.name,
           hindi_title: a.article.hindi_title,
         })
       end
@@ -269,7 +269,7 @@ class Admin::CompiledScripturesController < ApplicationController
     end
 
     def cs_article_params
-      params.fetch(:cs_article, {}).permit(:chapter_id, :scripture_id, :article_id, :user_id)
+      params.fetch(:cs_article, {}).permit(:chapter_id, :scripture_id, :article_id, :user_id, :index)
     end
 
     def verify_admin
