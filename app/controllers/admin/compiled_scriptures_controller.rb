@@ -7,7 +7,7 @@ class Admin::CompiledScripturesController < ApplicationController
   def show
     page = params[:page].present? ? params[:page] : 1
     @chapters = @scripture.chapters.order("index ASC")
-    @chapter = @chapters[0]
+    # @chapter = @chapters[0]
 
     get_articles_by_page(page)
 
@@ -107,8 +107,6 @@ class Admin::CompiledScripturesController < ApplicationController
   # action for compile scripture show page
   def get_cs_articles
     page = params[:page].present? ? params[:page] : 1
-    @chapter = Chapter.find(params[:chapter_id]) rescue nil
-
     get_articles_by_page(page)
 
     render json: {
@@ -125,19 +123,27 @@ class Admin::CompiledScripturesController < ApplicationController
 
     if @cs_article.update(index: params[:index])
    
-      @parent = @cs_article.chapter.present? ? @cs_article.chapter : @cs_article.scripture
+      # @parent = @cs_article.chapter.present? ? @cs_article.chapter : @cs_article.scripture
       
-      @articles = @parent.cs_articles.order("index ASC").page(page).per(10)
-      @articles = @articles.map do |a| 
-        a.attributes.merge({
-          article_type: a.article.article_type.name,
-          cs_article_id: a.id,
-          hindi_title: a.article.hindi_title,
-        })
-      end
+      # @articles = @parent.cs_articles.order("index ASC").page(page).per(10)
+      # @articles = @articles.map do |a| 
+      #   a.attributes.merge({
+      #     article_type: a.article.article_type.name,
+      #     cs_article_id: a.id,
+      #     hindi_title: a.article.hindi_title,
+      #   })
+      # end
+
+      # render json: {
+      #   articles: @articles,
+      # }
+      get_articles_by_page(page)
 
       render json: {
+        chapter: @chapter,
         articles: @articles,
+        total_articles: @total_articles,
+        current_page: page,
       }
     else
       render json: {
@@ -147,7 +153,6 @@ class Admin::CompiledScripturesController < ApplicationController
   end
 
   def delete_article
-
     page = params[:page].present? ? params[:page] : 1
     @cs_article = CsArticle.find(params[:article_id])
     @parent = @cs_article.chapter.present? ? @cs_article.chapter : @cs_article.scripture
@@ -158,35 +163,43 @@ class Admin::CompiledScripturesController < ApplicationController
 
     if @articles.blank?
       page = page - 1
-      @articles = @parent.cs_articles.order("index ASC").page(page).per(10)
+      # @articles = @parent.cs_articles.order("index ASC").page(page).per(10)
     end
 
-    @total_articles = @parent.cs_articles.count
-    @articles = @articles.map do |a| 
-      a.attributes.merge({
-        article_type: a.article.article_type.name,
-        cs_article_id: a.id,
-        hindi_title: a.article.hindi_title,
-      })
-    end
+    # @total_articles = @parent.cs_articles.count
+    # @articles = @articles.map do |a| 
+    #   a.attributes.merge({
+    #     article_type: a.article.article_type.name,
+    #     cs_article_id: a.id,
+    #     hindi_title: a.article.hindi_title,
+    #   })
+    # end
+
+    # render json: {
+    #   articles: @articles,
+    #   total_articles: @total_articles,
+    #   current_page: page
+    # }
+    get_articles_by_page(page)
 
     render json: {
+      chapter: @chapter,
       articles: @articles,
       total_articles: @total_articles,
-      current_page: page
+      current_page: page,
     }
   end
 
   def update_article_chapter
     page = params[:page]
     @cs_article = CsArticle.find(params[:cs_article_id])
-    @chapter = @cs_article.chapter
     @cs_article.update(chapter_id: params[:new_chapter_id])
     
     get_articles_by_page(page);
 
     render json: {
       scripture: @scripture,
+      chapter: @chapter,
       articles: @articles,
       total_articles: @total_articles,
       current_page: page,
@@ -249,16 +262,17 @@ class Admin::CompiledScripturesController < ApplicationController
       #   @articles = @scripture.cs_articles.order("index ASC").page(page).per(10)
       #   @total_articles = @scripture.cs_articles.count
       # end
+      @chapter = Chapter.find(params[:chapter_id]) rescue nil
       @parent = @chapter.present? ? @chapter : @scripture
 
-      @articles = @parent.cs_articles.order("index ASC").page(page).per(10)
+      @articles = @parent.cs_articles.order("chapter_id, index ASC").page(page).per(10)
       @total_articles = @parent.cs_articles.count
 
       @articles = @articles.map do |a| 
         a.attributes.merge({
           article_type: a.article.article_type.name,
           cs_article_id: a.id,
-          chapter: a.chapter.name,
+          chapter: (a.chapter.name rescue nil),
           hindi_title: a.article.hindi_title,
         })
       end

@@ -56,7 +56,6 @@
         errors: @scripture_article.errors.full_messages 
       }
     end
-
   end
 
   def update
@@ -71,7 +70,6 @@
         errors: @scripture_article.errors.full_messages 
       }
     end
-
   end
 
   def destroy
