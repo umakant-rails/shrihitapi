@@ -2,7 +2,7 @@ class Public::StoriesController < ApplicationController
 
   def index
     page = params[:page].present? ? params[:page] : 1
-    @stories = Story.page(page).per(10)
+    @stories = Story.order("created_at DESC").page(page).per(10)
     @total_stories = Story.all.count
     render json: {
       stories: @stories,
@@ -11,7 +11,7 @@ class Public::StoriesController < ApplicationController
   end
 
   def show
-    @story = Story.where(title: params[:id].strip)[0] rescue nil
+    @story = Story.find(params[:id]) rescue nil
 
     if @story && @story.scripture
       scripture = @story.scripture
