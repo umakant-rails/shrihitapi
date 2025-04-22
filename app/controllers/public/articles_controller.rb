@@ -26,8 +26,8 @@ class Public::ArticlesController < ApplicationController
   end
 
   def show
-    @article = Article.where(hindi_title: params[:id])[0] rescue nil
-
+    @article = Article.where("hindi_title like ?", "%#{params[:id].strip}%")[0] rescue nil
+  
     if @article.present?
       comments = @article.get_comments
 
