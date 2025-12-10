@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  scope(:path => '/api') do
+  scope(:path => '/api/rails') do
     get '/current_user', to: 'current_user#index' 
     post '/users/get_role', to: 'current_user#get_user_role'
 
@@ -38,6 +38,9 @@ Rails.application.routes.draw do
     resources :panchangs, only: [:index] do
       get '/navigate' => 'panchangs#navigate_month', on: :member
     end
+    # resources :bhajans do 
+    #   get '/search_bhajans' => "bhajans#search_bhajans", on: :collection
+    # end
 
     namespace :admin do
       resources :articles do
@@ -85,9 +88,11 @@ Rails.application.routes.draw do
         post '/update_article_chapter' => "compiled_scriptures#update_article_chapter", as: :update_article_chapter, on: :member
       end
       resources :panchangs do 
-        post '/populate_panchang' => "panchangs#populate_panchang", on: :member, as: :populate_panchang
+        post '/populate_tithis' => "panchangs#populate_tithis", on: :member, as: :populate_tithis
         post '/add_purshottam_mas' => "panchangs#add_purshottam_mas", on: :member, as: :add_purshottam_mas
         post '/remove_purshottam_mas' => "panchangs#remove_purshottam_mas", on: :member, as: :remove_purshottam_mas
+        get   '/get_months' => "panchangs#get_months", on: :member
+        post '/set_current_panchang' => "panchangs#set_current_panchang", on: :member
 
         resources :panchang_tithis do
           get '/new' => "panchang_tithis#new", on: :collection
@@ -127,6 +132,7 @@ Rails.application.routes.draw do
         get '/navigate' => 'panchangs#navigate_month', on: :member
       end
       resources :suggestions
+      # resources :bhajans, only: [:index, :show]
     end
   end
 end
