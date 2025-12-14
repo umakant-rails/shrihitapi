@@ -45,6 +45,8 @@ class ArticlesController < ApplicationController
     @article = current_user.articles.new(article_params)
 
     if @article.save
+      hs = {scripture_id: article_params[:scripture_id], article_id:  @article.id, user_id: current_user.id}
+      CsArticle.create(hs)if CsArticle.where(hs).blank?
       create_tags_for_articles
       render json: { article: @article, notice: "Article was created successfully."}
     else
@@ -86,6 +88,8 @@ class ArticlesController < ApplicationController
   # PUT/PATCH /articles or /articles.json
   def update
     if @article.update(article_params)
+      hs = {scripture_id: article_params[:scripture_id], article_id:  @article.id, user_id: current_user.id}
+      CsArticle.create(hs)if CsArticle.where(hs).blank?
       update_tags_for_articles
       render json: { article: @article, notice: "रचना को सफलतापूर्वक अद्यतित कर दिया गया है."}
     else
@@ -165,7 +169,7 @@ class ArticlesController < ApplicationController
   private
 
     def article_params
-      params.fetch(:article, {}).permit(:content, :raag_id, :scripture_id, :index, 
+      params.fetch(:article, {}).permit(:content, :interpretation, :raag_id, :scripture_id, :index, 
         :author_id, :article_type_id, :theme_id, :context_id, :hindi_title, 
         :english_title, :is_approved, image_attributes:[:image])
     end

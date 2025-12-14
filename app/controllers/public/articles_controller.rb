@@ -26,18 +26,31 @@ class Public::ArticlesController < ApplicationController
   end
 
   def show
-    @article = Article.where("hindi_title like ?", "%#{params[:id].strip}%")[0] rescue nil
-  
-    if @article.present?
-      comments = @article.get_comments
+    article = Article.where("hindi_title like ?", "%#{params[:id].strip}%")[0] rescue nil
 
-      article_tmp = @article.attributes.merge({
-        author: @article.author.name, 
-        article_type: @article.article_type.name,
+    related_articles = article.context.present? ? article.context.articles.where("id not in (?)", article.id).first(10) : nil
+    related_articles = article.tags[0].aritlces.where("id not in (?)", article.id).first(10) if related_articles.blank?
+    related_articles = article.author.aritlces.where("id not in (?)", article.id).first(10) if related_articles.blank?
+    related_articles = article.aritcle_type.aritlces.where("id not in (?)", article.id).first(10) if related_articles.blank?
+    related_articles = Article.where("id > ?", article.id).first(10) if related_articles.blank?
+
+    tags = Tag.all
+    contexts = Context.all
+
+    if article.present?
+      comments = article.get_comments
+
+      article_tmp = article.attributes.merge({
+        author: article.author.name, 
+        article_type: article.article_type.name,
         comments: comments
+
       })
       render json: {
-        article: article_tmp
+        article: article_tmp,
+        related_articles: related_articles,
+        tags: tags,
+        contexts: contexts
       }
     else
       render json: {

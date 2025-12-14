@@ -19,7 +19,7 @@
     @scripture_article = ScriptureArticle.find(params[:id])
     @article_types = ArticleType.all
     @scripture_article = @scripture_article.attributes.merge({
-      section_id: @scripture_article.chapter.parent_id
+      section_id: @scripture_article.chapter ? @scripture_article.chapter.parent_id : ''
     })
 
     render json: {

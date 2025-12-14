@@ -126,12 +126,19 @@ class Admin::ScripturesController < ApplicationController
 
   def delete_scr_article
     page = params[:page].present? ? params[:page] : 1
+    articles, total_articles = nil, nil
+
     if @scripture.scripture_type.name == "रसिक वाणी"
       Article.find(params[:article_id]).destroy rescue nil
+      articles, total_articles = @scripture.get_vani_articles(params[:chapter_id], page)
+    elsif @scripture.scripture_type.name == "ग्रन्थ"
+      ScriptureArticle.find(params[:article_id]).destroy rescue nil
+      articles, total_articles = @scripture.get_granth_articles(params[:chapter_id], page)
     else
       @scripture.cs_articles.find(params[:article_id]).destroy
+      articles, total_articles = @scripture.get_cs_articles(params[:chapter_id], page)
     end
-    articles, total_articles = @scripture.get_articles(params[:chapter_id], page)
+    
 
     render json: {
       scripture: @scripture,

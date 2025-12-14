@@ -1,7 +1,7 @@
 class Admin::PanchangsController < ApplicationController
 	before_action :authenticate_user!
 	before_action :verify_admin
-	before_action :set_panchang, only: %i[ show edit update destroy ]
+	before_action :set_panchang, only: %i[ show edit update destroy get_months set_current_panchang]
 
 	def index
 		get_panchangs
@@ -17,12 +17,12 @@ class Admin::PanchangsController < ApplicationController
   	if @panchang.save
     	HindiMonth::MONTH.each do | month |
 				month_order = month_order + 1
-				@panchang.hindi_months.create({name: month, order: month_order, is_purshottam_month: false})
 				if month == params[:purshottam_month]
 					month_order = month_order + 1
 					@panchang.hindi_months.create({name: "#{month}", order: month_order, is_purshottam_month: true})
 				end
-			end
+        @panchang.hindi_months.create({name: month, order: month_order, is_purshottam_month: false})
+      end
     	render json: {panchang: @panchang, notice: "पंचांग की एंट्री सफलतापूर्वक की गई."}
     else
     	render json: {panchang: @panchang.errors.full_messages, error: @panchang.errors.full_messages}
@@ -57,6 +57,20 @@ class Admin::PanchangsController < ApplicationController
     	total_panchangs: @total_panchangs,
     	notice: 'Panchang is deleted successfully.'
     }
+  end
+
+  def get_months
+    months = @panchang.hindi_months
+    render json: { months: months}
+  end
+
+  def set_current_panchang
+    panchang_prev = Panchang.where(current_panchang: true).first
+
+    if @panchang.update(current_panchang: true)
+      panchang_prev.update(current_panchang: false) if panchang_prev
+      render json: {panchangs: Panchang.order("vikram_samvat ASC")}
+    end
   end
 
   private

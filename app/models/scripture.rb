@@ -9,7 +9,7 @@ class Scripture < ApplicationRecord
   has_many :scripture_articles, dependent: :destroy 
   has_many :stories
   has_many :cs_articles
-  has_many :articles
+  has_many :articles, through: :cs_articles
 
   # has_many :scr_articles, through: :cs_articles
 
@@ -58,24 +58,24 @@ class Scripture < ApplicationRecord
     return articles, total_articles
   end
 
-  def get_scripture_articles(chapter_id, page)
-    articles, total_articles = nil, nil
-    if chapter_id.present?
-      articles = self.scripture_articles.where("chapter_id=?", chapter_id).order("index ASC").page(page).per(10)
-      total_articles = self.scripture_articles.where("chapter_id=?", chapter_id).count
-    else
-      articles = self.scripture_articles.order("index ASC").page(page).per(10)
-      total_articles = self.scripture_articles.count
-    end
+  # def get_scripture_articles(chapter_id, page)
+  #   articles, total_articles = nil, nil
+  #   if chapter_id.present?
+  #     articles = self.scripture_articles.where("chapter_id=?", chapter_id).order("index ASC").page(page).per(10)
+  #     total_articles = self.scripture_articles.where("chapter_id=?", chapter_id).count
+  #   else
+  #     articles = self.scripture_articles.order("index ASC").page(page).per(10)
+  #     total_articles = self.scripture_articles.count
+  #   end
 
-    articles = articles.map do |article| 
-      article.attributes.merge({
-        author: article.author.name,
-        article_type: article.article_type.name
-      })
-    end
-    return articles, total_articles
-  end
+  #   articles = articles.map do |article| 
+  #     article.attributes.merge({
+  #       author: article.author.name,
+  #       article_type: article.article_type.name
+  #     })
+  #   end
+  #   return articles, total_articles
+  # end
 
   def get_stories(page)
     stories = self.stories.order("index ASC").page(page).per(10)
@@ -102,9 +102,15 @@ class Scripture < ApplicationRecord
         # article = a.scripture_article
         article.attributes.merge({article_type: article.article_type.name})
       end
-    else
+    elsif self.chapters.present?
       articles = self.chapters.first.scripture_articles.order("index ASC").page(page).per(10) rescue nil
       total_articles = self.chapters.first.scripture_articles.count rescue 0
+      articles = articles.map { | article | 
+        article.attributes.merge({article_type: article.article_type.name})
+      }
+    else 
+      articles = self.scripture_articles.order("index ASC").page(page).per(10) rescue nil
+      total_articles = self.scripture_articles.count rescue 0
       articles = articles.map { | article | 
         article.attributes.merge({article_type: article.article_type.name})
       }

@@ -53,6 +53,8 @@ group :development, :test do
   gem "capistrano-rvm", require: false
   gem "capistrano-bundler", require: false
   gem 'capistrano-passenger'
+  gem 'ed25519', '~> 1.3'
+  gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
 group :development do

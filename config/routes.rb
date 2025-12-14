@@ -38,9 +38,9 @@ Rails.application.routes.draw do
     resources :panchangs, only: [:index] do
       get '/navigate' => 'panchangs#navigate_month', on: :member
     end
-    # resources :bhajans do 
-    #   get '/search_bhajans' => "bhajans#search_bhajans", on: :collection
-    # end
+    resources :bhajans do 
+      get '/search_bhajans' => "bhajans#search_bhajans", on: :collection
+    end
 
     namespace :admin do
       resources :articles do
@@ -132,7 +132,7 @@ Rails.application.routes.draw do
         get '/navigate' => 'panchangs#navigate_month', on: :member
       end
       resources :suggestions
-      # resources :bhajans, only: [:index, :show]
+      resources :bhajans, only: [:index, :show]
     end
   end
 end

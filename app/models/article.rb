@@ -4,7 +4,7 @@ class Article < ApplicationRecord
   belongs_to :context, optional: true
   belongs_to :user
   belongs_to :article_type
-  belongs_to :scripture, optional: true
+  # belongs_to :scripture, optional: true
   has_many :theme_articles
   has_many :theme_chapters
   has_many :comments, as: :commentable

@@ -14,13 +14,12 @@ class Public::PanchangsController < ApplicationController
 
   def navigate_month
   	date = Date.parse(params[:date])
-		@panchang = PanchangTithi.where(date: date).first.panchang rescue nil
-		current_month = @panchang.get_current_month rescue nil
-		get_tithis(date)
+		@panchang = Panchang.where(current_panchang: true).first rescue nil
+		tithis = get_tithis(date)
+
 		render json: {
 			panchang: @panchang,
-			tithis: @tithis,
-			current_month: current_month
+			tithis: tithis,
 		}
 	end
 

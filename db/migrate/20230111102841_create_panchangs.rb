@@ -6,6 +6,7 @@ class CreatePanchangs < ActiveRecord::Migration[7.0]
       t.string  :panchang_type
       t.integer :vikram_samvat
       t.boolean :is_tithi_populated
+      t.boolean :current_panchang
       t.timestamps
     end
   end

@@ -7,8 +7,6 @@ class Admin::CompiledScripturesController < ApplicationController
   def show
     page = params[:page].present? ? params[:page] : 1
     @chapters = @scripture.chapters.order("index ASC")
-    # @chapter = @chapters[0]
-
     get_articles_by_page(page)
 
     render json: {
@@ -31,10 +29,6 @@ class Admin::CompiledScripturesController < ApplicationController
     get_articles_by_params
 
     render json: {
-      # contexts: @contexts,
-      # raags: @raags,
-      # authors: @authors,
-      # article_types: @article_types,
       scripture: @scripture,
       chapters: @scripture.chapters,
       total_articles: @total_articles,
@@ -122,21 +116,6 @@ class Admin::CompiledScripturesController < ApplicationController
     @cs_article = CsArticle.find(params[:article_id])
 
     if @cs_article.update(index: params[:index])
-   
-      # @parent = @cs_article.chapter.present? ? @cs_article.chapter : @cs_article.scripture
-      
-      # @articles = @parent.cs_articles.order("index ASC").page(page).per(10)
-      # @articles = @articles.map do |a| 
-      #   a.attributes.merge({
-      #     article_type: a.article.article_type.name,
-      #     cs_article_id: a.id,
-      #     hindi_title: a.article.hindi_title,
-      #   })
-      # end
-
-      # render json: {
-      #   articles: @articles,
-      # }
       get_articles_by_page(page)
 
       render json: {
@@ -166,20 +145,6 @@ class Admin::CompiledScripturesController < ApplicationController
       # @articles = @parent.cs_articles.order("index ASC").page(page).per(10)
     end
 
-    # @total_articles = @parent.cs_articles.count
-    # @articles = @articles.map do |a| 
-    #   a.attributes.merge({
-    #     article_type: a.article.article_type.name,
-    #     cs_article_id: a.id,
-    #     hindi_title: a.article.hindi_title,
-    #   })
-    # end
-
-    # render json: {
-    #   articles: @articles,
-    #   total_articles: @total_articles,
-    #   current_page: page
-    # }
     get_articles_by_page(page)
 
     render json: {
@@ -246,22 +211,18 @@ class Admin::CompiledScripturesController < ApplicationController
       @articles = @articles.map do | article |
         article.attributes.merge({article_type: article.article_type.name})
       end
+      tmp = @added_articles.length
+      
       @added_articles = @added_articles.map do | cs_article |
         cs_article.attributes.merge({
-          article_type: cs_article.article.article_type.name,
-          hindi_title: cs_article.article.hindi_title
+          article_type: (cs_article.article.article_type.name rescue '-'),
+          hindi_title: (cs_article.article.hindi_title rescue '-')
         })
       end
     end
 
     def get_articles_by_page(page)
-      # if @chapters.present?
-      #   @articles = @chapters[0].cs_articles.order("index ASC").page(page).per(10)
-      #   @total_articles = @chapters[0].cs_articles.count
-      # else
-      #   @articles = @scripture.cs_articles.order("index ASC").page(page).per(10)
-      #   @total_articles = @scripture.cs_articles.count
-      # end
+
       @chapter = Chapter.find(params[:chapter_id]) rescue nil
       @parent = @chapter.present? ? @chapter : @scripture
 
