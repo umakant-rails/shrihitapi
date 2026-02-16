@@ -64,8 +64,9 @@ class Public::ArticlesController < ApplicationController
     page = params[:page]
     search_term = params[:term].strip rescue ''
 
-    @articles = Article.where("is_approved=TRUE and (content like ? or LOWER(hindi_title) like ?)", 
-      "%#{search_term.strip}%", "%#{search_term.strip}%")
+    @articles = Article.search(search_term.strip)
+    # where("is_approved=TRUE and (content like ? or LOWER(hindi_title) like ?)", 
+    #   "%#{search_term.strip}%", "%#{search_term.strip}%")
     articles = page.present? ? @articles.page(page).per(10) : @articles
     total_articles = @articles.count
 

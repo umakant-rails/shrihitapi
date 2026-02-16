@@ -1,5 +1,20 @@
 class Article < ApplicationRecord
 
+  include PgSearch::Model
+
+  pg_search_scope :search,
+    against: {
+      hindi_title: 'A',
+      english_title: 'A',
+      interpretation: 'C',
+      content: 'B'
+    },
+    using: {
+      tsearch: {
+        prefix: true
+      }
+    }
+
   belongs_to :author, optional: true
   belongs_to :context, optional: true
   belongs_to :user

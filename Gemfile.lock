@@ -176,6 +176,9 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     pg (1.5.4)
+    pg_search (2.3.7)
+      activerecord (>= 6.1)
+      activesupport (>= 6.1)
     psych (5.1.2)
       stringio
     puma (5.6.7)
@@ -265,6 +268,7 @@ DEPENDENCIES
   groupdate
   kaminari
   pg (~> 1.5.4)
+  pg_search
   puma (~> 5.0)
   rack-cors
   rails (~> 7.0.8)

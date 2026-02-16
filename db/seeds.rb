@@ -76,7 +76,7 @@ context_list.each do | context |
   User.first.contexts.create!(name: context) if Context.where(name: context).blank?
 end
 
-raag_list = [{name: 'मल्हार', name_eng: 'malhar'}, {name:'विहाग', name_eng:'vihag'}, {name:'पूरवी', name_eng:'vihag'}, 
+raag_list = [{name: 'मल्हार', name_eng: 'malhar'}, {name:'विहाग', name_eng:'vihag'}, {name:'पूरवी', name_eng:'purvi'}, 
   {name:'भैरव', name_eng: 'bhairav'}, {name:'आसावरी', name_eng: 'asawari'}, {name: 'कमोद', name_eng:'kamod'}, 
   {name: 'टोडी', name_eng: 'todi'}, {name:'धनाश्री', name_eng: 'dhanashri'}, {name:'सोरठ', name_eng:'sorath'}, 
   {name:'रामकली', name_eng:'ramkali'}, {name:'विभास', name_eng:'vibhas'}, {name:'गौड़', name_eng: 'gound'},
@@ -91,7 +91,13 @@ raag_list = [{name: 'मल्हार', name_eng: 'malhar'}, {name:'विह�
   {name: 'रायसो', name_eng: 'rayaso'}, {name:'मुल्तानी', name_eng: 'multani'}, {name:'जंगला', name_eng: 'jangala'}, 
   {name: 'हिंडोल', name_eng: 'hindol'}, {name:'भीमपलासी', name_eng: 'bheempalasi'}, {name:'कलावती', name_eng:'kalavati'}, 
   {name: 'श्री', name_eng: 'shri'}, {name:'कान्हरौ', name_eng: 'kanharo'}, {name:'षट', name_eng:'kshat'}, 
-  {name: 'केदारौ', name_eng: 'kedaro'}, {name:'जिला', name_eng: 'jila'}, {name: 'नट', name_eng: 'nat'}, {name: 'शहानौ', name_eng: 'shahano'}];
+  {name: 'केदारौ', name_eng: 'kedaro'}, {name:'जिला', name_eng: 'jila'}, {name: 'नट', name_eng: 'nat'}, 
+  {name: 'शहानौ', name_eng: 'shahano'}, 
+  {name: 'ईमान', name_eng: 'iman'}, {name: 'भैरवी', name_eng: 'bhairavi'}, {name: 'रेखता', name_eng: 'rekhata'},
+  {name: 'काफी', name_eng: 'kafi'}, {name: 'गूजरी', name_eng: 'gujari'}, {name: 'लावनी', name_eng: 'lavani'}, 
+  {name: 'झंझोटी', name_eng: 'jhanjhoti'}, {name: 'श्याम कल्याण', name_eng: 'shyam kalyan'}, {name: 'छायानट', name_eng: 'chhayanat'}, 
+  {name: 'यमन', name_eng: 'yaman'},
+];
 
 raag_list.each do | raag |
   Raag.create!(raag) if Raag.where(raag).blank?
