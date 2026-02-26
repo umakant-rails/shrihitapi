@@ -82,14 +82,14 @@ class Admin::ArticlesController < ApplicationController
       arr.push('author_id='+params[:author_id]) if params[:author_id].present?
       arr.push('context_id='+params[:context_id]) if params[:context_id].present?
       arr.push('scripture_id='+params[:scripture_id]) if params[:scripture_id].present?
-      arr.push('is_approved=true') if params[:status].present? && params[:status] == "approved"
-      arr.push('(is_approved is null or is_approved = false)') if params[:status].present? && params[:status] == "pending"
+      # arr.push('is_approved=true') if params[:status].present? && params[:status] == "approved"
+      # arr.push('(is_approved is null or is_approved = false)') if params[:status].present? && params[:status] == "pending"
       arr.push("(hindi_title like '%#{params[:term]}%' or content like '%#{params[:term]}%')") if params[:term].present?
 
       queryy = arr.join(' and ')
       if arr.length > 0
         @total_articles = Article.where(queryy).count
-        @articles = Article.where(queryy).order("created_at DESC").page(page).per(10)
+        @articles = Article.search(params[:term].strip()).where(queryy).order("created_at DESC").page(page).per(10)
       else
         @total_articles = Article.count
         @articles = Article.order("created_at DESC").page(page).per(10)

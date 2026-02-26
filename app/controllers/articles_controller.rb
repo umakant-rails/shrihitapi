@@ -46,7 +46,7 @@ class ArticlesController < ApplicationController
 
     if @article.save
       hs = {scripture_id: article_params[:scripture_id], article_id:  @article.id, user_id: current_user.id}
-      CsArticle.create(hs)if CsArticle.where(hs).blank?
+      CsArticle.create(hs) if CsArticle.where(hs).blank? && article_params[:scripture_id].present?
       create_tags_for_articles
       render json: { article: @article, notice: "Article was created successfully."}
     else
@@ -151,8 +151,9 @@ class ArticlesController < ApplicationController
     page = params[:page]
     search_term = params[:term].strip rescue ''
 
-    @articles = Article.where("is_approved=TRUE and (content like ? or LOWER(hindi_title) like ?  or LOWER(english_title) like ?)", 
-      "%#{search_term}%", "%#{search_term}%", "%#{search_term}%")
+    # @articles = Article.where("is_approved=TRUE and (content like ? or LOWER(hindi_title) like ?  or LOWER(english_title) like ?)", 
+    #   "%#{search_term}%", "%#{search_term}%", "%#{search_term}%")
+    @articles = Article.search(search_term.strip)
     articles = page.present? ? @articles.page(page).per(10) : @articles
     total_articles = @articles.count
 
