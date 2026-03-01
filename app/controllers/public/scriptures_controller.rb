@@ -20,7 +20,7 @@ class Public::ScripturesController < ApplicationController
 
     @scripture = Scripture.where(name_eng: params[:id].strip).first rescue nil
     if @scripture.present? && @scripture.scripture_type.name == "रसिक वाणी"
-      @articles = @scripture.articles.order("index")
+      @articles = @scripture.articles.order("cs_articles.index")
 
       @scripture = @scripture.attributes.merge({
         scripture_type: @scripture.scripture_type.name,
