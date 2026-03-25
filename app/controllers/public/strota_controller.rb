@@ -2,9 +2,11 @@ class Public::StrotaController < ApplicationController
   # before_action :set_required_data
 
   def index 
+    page = params[:page] ? params[:page] : 0
     strota_types = StrotaType.all
-    strota = Strotum.includes(:strota_articles)
-    
+    strota = Strotum.includes(:strota_articles).page(page).per(10)
+    total_strota = Strotum.count
+
     strota_tmp = strota.map do | strotum |
       strotum.attributes.merge({
         strota_type: strotum.strota_type.name,
@@ -21,7 +23,9 @@ class Public::StrotaController < ApplicationController
 
     render json:{
       strota_types: strota_types,
-      strota: strota_tmp
+      strota: strota_tmp,
+      total_pages: (total_strota/10).ceil,
+      current_page: page
     }
   end
 

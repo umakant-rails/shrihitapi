@@ -109,6 +109,7 @@ Rails.application.routes.draw do
         get "/get_footer_data" => "home#get_footer_data", as: :get_footer_data, on: :collection
       end
       resources :articles, only: [:index, :show] do
+        get "/en/:id" => "articles#show", as: :get_article_by_eng_title, on: :collection
         get "/autocomplete_term" => "articles#autocomplete_term", as: :autocomplete_term, on: :collection
         get "/search" => "articles#search_page", as: :search_page, on: :collection
         get "/search_articles" => "articles#search_articles", as: :search_articles, on: :collection

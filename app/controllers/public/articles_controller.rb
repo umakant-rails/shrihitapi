@@ -26,7 +26,10 @@ class Public::ArticlesController < ApplicationController
   end
 
   def show
-    article = Article.where("hindi_title like ?", "%#{params[:id].strip}%")[0] rescue nil
+    article = Article.where("hindi_title like ? or english_title like ?", 
+      "%#{params[:id].strip}%", 
+      "%#{params[:id].strip}%"
+    )[0] rescue nil
 
     related_articles = article.context.present? ? article.context.articles.where("id not in (?)", article.id).first(10) : nil
     related_articles = article.tags[0].aritlces.where("id not in (?)", article.id).first(10) if related_articles.blank?
